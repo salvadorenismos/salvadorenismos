@@ -1,9 +1,10 @@
 /* Service worker: keeps the app working with no signal.
    Bump CACHE when you publish changes, so phones pick them up. */
-const CACHE = "salvadorenismos-v16";
+const CACHE = "salvadorenismos-v18";
 const ASSETS = [
   "./",
   "index.html",
+  "backdrop.png",
   "manifest.webmanifest",
   "icons/favicon.png",
   "icons/apple-touch-icon.png",

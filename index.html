@@ -1305,20 +1305,14 @@ const LROWS=LEVEL.length, LCOLS=LEVEL[0].length, LW=LCOLS*T;
    sits far off in the distance and drifts by more slowly. */
 /* Pictures laid over the blocks. x and y are in squares, h is the height in
    squares; the width follows the drawing's own shape. back:1 puts a drawing
-   in the far distance, where it drifts by at half speed - the paisaje runs
-   the length of the level, being a valley, with a catedral now and then. */
+   in the far distance, where it drifts by at half speed. The landscape
+   picture behind everything is drawn in gameDraw, not here. */
 const SCENERY=[
-  {art:"paisaje",  x:4,   y:10, h:4,   back:1},
-  {art:"paisaje",  x:18,  y:10, h:3.6, back:1},
+  /* the far catedrales, over the landscape picture. The picture itself is the
+     country behind them (see gameDraw), so there is no paisaje here now. */
   {art:"catedral", x:30,  y:10, h:5,   back:1},
-  {art:"paisaje",  x:42,  y:10, h:4.2, back:1},
-  {art:"paisaje",  x:55,  y:10, h:3.6, back:1},
-  {art:"paisaje",  x:68,  y:10, h:4,   back:1},
   {art:"catedral", x:80,  y:10, h:5.2, back:1},
-  {art:"paisaje",  x:92,  y:10, h:3.8, back:1},
-  {art:"paisaje",  x:105, y:10, h:4.2, back:1},
   {art:"catedral", x:117, y:10, h:5,   back:1},
-  {art:"paisaje",  x:128, y:10, h:3.7, back:1},
   {art:"casa_adobe",   x:17,  y:10, h:2.7},
   {art:"volcan",       x:40,  y:10, h:6.7},
   {art:"casa_gallina", x:78,  y:10, h:2.7},
@@ -1337,7 +1331,23 @@ const JUMP=8.8, JUMP2=7.4, BOUNCE=13;
 const HANGV=2.4, HANGMUL=.5;     /* while |vy| is small, gravity is halved */
 const PW=18, PH=30, DW=20, DH=18, DOGBEAT=T*2.2;
 
-let game=null, gameRaf=null, keys={};
+let game=null, gameRaf=null, keys={}, backCv=null, scene=null;
+
+/* The landscape picture, backdrop.png, made by build.py from art/. A copy is
+   laid mirrored beside it, so the picture can wrap while scrolling with no
+   seam: the join at each edge matches itself. */
+(function loadScene(){
+  const im=new Image();
+  im.onload=function(){
+    const c=document.createElement("canvas");
+    c.width=im.width*2; c.height=im.height;
+    const k=c.getContext("2d");
+    k.drawImage(im,0,0);
+    k.save(); k.translate(c.width,0); k.scale(-1,1); k.drawImage(im,0,0); k.restore();
+    scene=c;
+  };
+  im.src="backdrop.png";
+})();
 /* The end screen comes up a beat after she dies or wins. If the tab is left in
    that beat the game is already put away, so the pending call has to go too. */
 let gameOverTimer=null;
@@ -1570,10 +1580,20 @@ function gameDraw(){
   const g=game, x=gameCtx; if(!x) return;
   const cam=Math.round(g.cam);
 
-  /* sky */
-  const sky=x.createLinearGradient(0,0,0,VH);
-  sky.addColorStop(0,"#2E9BD6"); sky.addColorStop(.62,"#7FD0EC"); sky.addColorStop(1,"#CFEEF8");
-  x.fillStyle=sky; x.fillRect(0,0,VW,VH);
+  /* sky and far country: the Salvadoran landscape picture, scrolling at half
+     speed and wrapping by mirroring so there is never a seam. Until it has
+     loaded, the plain sky gradient shows instead. */
+  if(scene){
+    const sh=scene.height, m=Math.floor(g.cam*.5) % scene.width;
+    const first=Math.min(VW, scene.width-m);
+    x.drawImage(scene, m, 0, first, sh, 0, 0, first, sh);
+    if(first<VW) x.drawImage(scene, 0, 0, VW-first, sh, first, 0, VW-first, sh);
+    x.fillStyle="#1b4636"; x.fillRect(0, sh, VW, VH-sh);   /* the picture's own bottom edge */
+  } else {
+    const sky=x.createLinearGradient(0,0,0,VH);
+    sky.addColorStop(0,"#2E9BD6"); sky.addColorStop(.62,"#7FD0EC"); sky.addColorStop(1,"#CFEEF8");
+    x.fillStyle=sky; x.fillRect(0,0,VW,VH);
+  }
 
   /* the sol, riding along with her */
   const prog=LW>VW ? g.cam/(LW-VW) : 0;
@@ -1584,13 +1604,20 @@ function gameDraw(){
      around there - hence the halving here as well as on the camera. Without
      that second halving everything past about square 40 sat off to the right
      and was never seen at all. */
-  x.globalAlpha=.55;
+  /* The far valley is drawn whole onto its own canvas first and only then
+     faded in. The hills overlap, so drawing each one straight onto the sky at
+     55% would leave darker seams where two of them meet. */
+  if(!backCv){ backCv=document.createElement("canvas"); backCv.width=VW; backCv.height=VH; }
+  const bx=backCv.getContext("2d");
+  bx.clearRect(0,0,VW,VH);
   SCENERY.forEach(function(s){
     if(!s.back) return;
     const px = s.x*T*.5 + VW/4 - cam*.5;
     if(px<-220||px>VW+220) return;
-    blit(x,s.art, px, s.y*T, s.h*T, 0);
+    blit(bx,s.art, px, s.y*T, s.h*T, 0);
   });
+  x.globalAlpha=.55;
+  x.drawImage(backCv,0,0);
   x.globalAlpha=1;
 
   /* blocks */
