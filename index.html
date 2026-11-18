@@ -112,6 +112,8 @@
   /* ---------- shared ---------- */
   .panel{background:var(--white);border:var(--bd);box-shadow:var(--sh);padding:14px;margin-bottom:14px}
   .note{font-size:13.5px;line-height:1.5;opacity:.78}
+  .bi{display:block}
+  .bi .es{display:block;font-size:.84em;opacity:.72;font-weight:500;margin-top:3px}
   button{font-family:inherit;font-size:inherit;cursor:pointer;color:var(--ink)}
   .btn{border:var(--bd);background:var(--marigold);font-weight:800;padding:14px 16px;box-shadow:var(--sh);
     transition:transform .08s steps(2),box-shadow .08s steps(2);font-size:16px}
@@ -1761,6 +1763,8 @@ function renderJuego(){ juego(null) }
 
 function gameOver(){ gameOverTimer=null; if(!game) return; juego(game.won?"won":"lost") }
 
+/* Game copy is English first, then Spanish, the same as the tabs. */
+function bi(en,es){return '<span class="bi"><span class="en">'+en+'</span><span class="es">'+es+'</span></span>'}
 function juego(screen){
   const best=parseInt(store.get("juego-best")||"0",10);
 
@@ -1773,9 +1777,9 @@ function juego(screen){
       '<div class="pad">'+
         '<button class="padbtn" id="padl" aria-label="Left">◀</button>'+
         '<button class="padbtn" id="padr" aria-label="Right">▶</button>'+
-        '<button class="padbtn jump" id="padj" aria-label="Jump">SALTAR</button></div>'+
+        '<button class="padbtn jump" id="padj" aria-label="Jump">JUMP/SALTAR</button></div>'+
       '<p class="note" style="padding:10px 2px 0;text-align:center">'+
-        '← → caminar · espacio saltar · dos veces, salto doble</p>';
+        '← → walk/caminar · space jump/saltar · twice, double jump/dos veces, salto doble</p>';
     const cv=document.getElementById("gamecv");
     gameCtx=cv.getContext("2d");
     gameCtx.imageSmoothingEnabled=false;
@@ -1798,18 +1802,18 @@ function juego(screen){
       '<div class="card rise" style="background:'+(won?"var(--verde)":"var(--paper-2)")+';'+
         (won?"color:#fff":"")+'">'+
         '<div class="prompt" style="'+(won?"color:rgba(255,255,255,.75)":"")+'">'+
-          (won?"¡Llegaste!":"¡Puchica!")+'</div>'+
+          (won?bi("You made it!","¡Llegaste!"):bi("Oops!","¡Puchica!"))+'</div>'+
         '<div class="bignum">'+g.score+'</div>'+
         '<div class="prompt" style="margin:8px 0 0;'+(won?"color:rgba(255,255,255,.75)":"")+'">'+
-          (won?"pupusas de "+g.total:"pupusas — empezá otra vez")+
-          (best?' &nbsp;·&nbsp; mejor '+best:'')+'</div>'+
+          (won?"of "+g.total+" pupusas/pupusas de "+g.total:"pupusas — start over/empezá otra vez")+
+          (best?' &nbsp;·&nbsp; Best/Mejor '+best:'')+'</div>'+
         '<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">'+
           (won?icon("bandera",26)+icon("pupusa",26)+icon("estrella",26):icon("chucho",26))+'</div>'+
       '</div>'+
       '<p class="note" style="text-align:center;padding:0 6px 16px;font-size:14.5px">'+
-        (won?"Subiste hasta la punta de la pirámide.":
-             "Un hoyo o un chucho y el nivel vuelve a empezar.")+'</p>'+
-      '<button class="btn go wide" id="jagain">Otra vez</button>';
+        (won?bi("You made it to the top of the pirámide.","Subiste hasta la punta de la pirámide."):
+             bi("A hole or a chucho and the level starts over.","Un hoyo o un chucho y el nivel vuelve a empezar."))+'</p>'+
+      '<button class="btn go wide" id="jagain">Again/Otra vez</button>';
     if(won) cannons();
     document.getElementById("jagain").onclick=function(){tone(659,.12,"square",.08);buzz(12);juego("play")};
     return;
@@ -1817,19 +1821,26 @@ function juego(screen){
 
   view.innerHTML=
     '<div class="card rise" style="background:var(--blue);color:var(--paper)">'+
-      '<div class="prompt" style="color:rgba(255,255,255,.7)">Corré, saltá, juntá pupusas</div>'+
+      '<div class="prompt" style="color:rgba(255,255,255,.7)">'+bi("Run, jump, collect pupusas","Corré, saltá, juntá pupusas")+'</div>'+
       '<div class="hero" style="color:var(--marigold)">'+icon("canasta",40,"bob")+
         '<span>El Camino</span></div></div>'+
+    '<button class="btn go wide" id="jstart">'+icon("pupusa",20)+'Start/Empezar</button>'+
     '<div class="panel rise" style="padding:12px 14px">'+
-      '<p style="margin:0 0 8px;font-size:14.5px"><b>Las flechas</b> ← → para caminar, '+
+      '<p style="margin:0 0 8px;font-size:14.5px"><b>Arrow keys</b> ← → to walk, '+
+      '<b>space bar</b> to jump. Tap it <b>twice</b> for a second jump in the air. On a phone, use the buttons.</p>'+
+      '<p style="margin:0 0 8px;font-size:14.5px">Land <b>on top of</b> a chucho and it flies off. '+
+      'Touch it any other way and the run is over.</p>'+
+      '<p style="margin:0 0 12px;font-size:14.5px">Jump the houses, climb the volcán, bounce off the comal. '+
+      'A hole and you start again at the beginning.</p>'+
+      '<div style="border-top:0.5px solid rgba(0,0,0,.15);padding-top:10px">'+
+      '<p style="margin:0 0 8px;font-size:13px;opacity:.78"><b>Las flechas</b> ← → para caminar, '+
       '<b>la barra espaciadora</b> para saltar. Tocala <b>dos veces</b> y da un '+
       'segundo salto en el aire. En el teléfono, usá los botones.</p>'+
-      '<p style="margin:0 0 8px;font-size:14.5px">Caéle <b>encima</b> a un chucho y '+
+      '<p style="margin:0 0 8px;font-size:13px;opacity:.78">Caéle <b>encima</b> a un chucho y '+
       'sale volando. Tocalo de cualquier otra manera y se acabó.</p>'+
-      '<p class="note" style="margin:0">Saltá sobre las casas, subí el volcán, rebotá en el comal. '+
-      'Un hoyo y volvés al principio.</p></div>'+
-    '<button class="btn go wide" id="jstart">'+icon("pupusa",20)+'Empezar</button>'+
-    (best?'<p class="note" style="text-align:center;padding:12px 2px">Mejor: '+best+' pupusas</p>':'');
+      '<p style="margin:0;font-size:13px;opacity:.78">Saltá sobre las casas, subí el volcán, rebotá en el comal. '+
+      'Un hoyo y volvés al principio.</p></div></div>'+
+    (best?'<p class="note" style="text-align:center;padding:12px 2px">Best/Mejor: '+best+' pupusas</p>':'');
   document.getElementById("jstart").onclick=function(){
     tone(659,.12,"square",.08); buzz(12); juego("play")};
 }
