@@ -245,6 +245,8 @@
     display:flex;flex-direction:column;align-items:center;gap:4px;
     transition:color .12s steps(2),border-color .12s steps(2)}
   nav button .ico{opacity:.55;transition:opacity .12s steps(2)}
+  nav button span{display:block;white-space:nowrap;line-height:1.25}
+  nav button .es{font-size:10px;font-weight:700;opacity:.8}
   nav button[aria-current="true"]{color:var(--white);border-top-color:var(--marigold)}
   nav button[aria-current="true"] .ico{opacity:1}
 
@@ -615,9 +617,11 @@ function icon(name,size,cls){
          '" shape-rendering="crispEdges" aria-hidden="true" focusable="false">'+r+'</svg>';
 }
 
-const TAGS={caliche:"Caliche",nawat:"Nawat root",frase:"Phrase",trampa:"False friend",
-  comida:"Comida",cultura:"Cultura",familia:"Familia",casa:"En casa",
-  naturaleza:"Naturaleza",calle:"En la calle",fiestas:"Fiestas y leyendas"};
+/* "English/Spanish" - the English is what learners read first. "Nawat root"
+   is kept exactly as it is: CLAUDE.md asks for those badges unchanged. */
+const TAGS={caliche:"Caliche",nawat:"Nawat root",frase:"Phrase/Frase",trampa:"False friend/Falso amigo",
+  comida:"Food/Comida",cultura:"Culture/Cultura",familia:"Family/Familia",casa:"House/Casa",
+  naturaleza:"Nature/Naturaleza",calle:"Street/En la calle",fiestas:"Festivals/Fiestas y leyendas"};
 const YES=["¡Cabal!","¡Chivo!","¡Simón!","¡Así es!","¡Vaya pues!","¡Qué chivo!"];
 const NO=["¡Puchica!","Casi.","Otra vez.","Uy, no.","Está yuca."];
 
@@ -724,10 +728,10 @@ function renderPalabras(){
     if(!q) return true;
     return (x.w+" "+x.g+" "+(x.ex||"")).toLowerCase().indexOf(q)>-1;
   });
-  const chips=[["todas","All"],["caliche","Caliche"],["comida","Comida"],
-    ["nawat","Nawat roots"],["frase","Phrases"],["familia","Familia"],["casa","En casa"],
-    ["naturaleza","Naturaleza"],["calle","En la calle"],["fiestas","Fiestas y leyendas"],["cultura","Cultura"],
-    ["trampa","False friends"],["guardadas","Saved ("+saved.size+")"]];
+  const chips=[["todas","All/Todas"],["caliche","Caliche"],["comida","Food/Comida"],
+    ["nawat","Nawat roots"],["frase","Phrases/Frases"],["familia","Family/Familia"],["casa","House/Casa"],
+    ["naturaleza","Nature/Naturaleza"],["calle","Street/En la calle"],["fiestas","Festivals/Fiestas y leyendas"],["cultura","Culture/Cultura"],
+    ["trampa","False friends/Falsos amigos"],["guardadas","Saved/Guardadas ("+saved.size+")"]];
 
   sceneItem(null);
   view.innerHTML=
@@ -770,7 +774,7 @@ function renderPalabras(){
       else tone(392,.09,"square",.04);
       persist();
       const chip=view.querySelector('[data-f="guardadas"]');
-      if(chip) chip.textContent="Saved ("+saved.size+")";
+      if(chip) chip.textContent="Saved/Guardadas ("+saved.size+")";
       if(filter==="guardadas"&&!adding) setTimeout(renderPalabras,220);
     }});
 }
@@ -1736,12 +1740,13 @@ function juego(screen){
 }
 
 /* ============ SHELL ============ */
-const TABS=[["palabras","Palabras"],["vos","Vos"],["practica","Práctica"],
-  ["mercado","Mercado"],["juego","Juego"]];
+const TABS=[["palabras","Words/Palabras"],["vos","Vos"],["practica","Practice/Práctica"],
+  ["mercado","Market/Mercado"],["juego","Pupusa Game/Juego de pupusas"]];
 function renderTabs(){
   document.getElementById("tabs").innerHTML=TABS.map(function(t){
     return '<button data-tab="'+t[0]+'" aria-current="'+(tab===t[0])+'">'+
-      t[1]+'</button>'}).join("");
+      t[1].split("/").map(function(s,i){return '<span class="'+(i?"es":"en")+'">'+s+'</span>'}).join("")+
+      '</button>'}).join("");
   document.querySelectorAll("nav button").forEach(function(b){
     b.onclick=function(){
       if(tab===b.dataset.tab) return;
