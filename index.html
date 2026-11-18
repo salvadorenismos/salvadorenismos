@@ -964,7 +964,7 @@ function renderStart(){
       '<div class="prompt" style="color:rgba(255,255,255,.7)">'+(QUIZ_WORDS+QUIZ_VERBS)+' questions — words and vos forms</div>'+
       '<div class="hero" id="cycle" style="color:var(--marigold)">'+icon("pupusa",40,"bob")+
         '<span id="cw">chivo</span></div></div>'+
-    '<button class="btn go wide" id="start">Start</button>'+
+    '<button class="btn go wide" id="start">Start/Empezar</button>'+
     '<p class="note" style="padding:14px 2px">Drawn fresh from the glossary each round, '+
       "so you won't get the same set twice.</p>";
   const el=document.getElementById("cw");
@@ -1162,11 +1162,11 @@ function renderMercado(){
     sceneItem(null);
     view.innerHTML =
       '<div class="askrow">'+
-        '<span class="line">¡Buenas! ¿Qué ondas? ¿Le sirvo algo?</span></div>'+
+        '<span class="line">'+bi("Hi there! What's up? What can I get you?","¡Buenas! ¿Qué ondas? ¿Le sirvo algo?")+'</span></div>'+
       '<p class="note" style="padding:2px 2px 12px">Walk through the market and name what you see. '+
         pool.length+' things, drawn from your glossary.</p>'+
       gapNote+
-      '<button class="btn go wide" id="mstart">'+icon("pupusa",20)+'Ir al mercado</button>';
+      '<button class="btn go wide" id="mstart">'+icon("pupusa",20)+'Go to the market/Ir al mercado</button>';
     document.getElementById("mstart").onclick=function(){
       tone(659,.12,"square",.08);buzz(12);
       /* If a word ever has more than one picture, ask it once per round and
@@ -1190,7 +1190,8 @@ function renderMercado(){
         '<div class="prompt" style="margin:8px 0 0;'+(win?"color:rgba(255,255,255,.75)":"")+
           '">de '+n+' &nbsp;·&nbsp; racha '+mercado.best+'</div></div>'+
       '<div class="askrow"><span class="line">'+
-        (win?'¡Listo! Aquí están, bien calientitas.':'Vení cuando querás, mi amor.')+
+        (win?bi("Done! Here they are, nice and hot.","¡Listo! Aquí están, bien calientitas."):
+             bi("Come back any time!","Vení cuando querás."))+
         '</span></div>'+
       '<button class="btn go wide" id="magain">'+icon("pupusa",20)+'Otra vuelta</button>';
     if(win){cannons();fanfare();buzz([18,60,18,60,32])}
@@ -1227,7 +1228,7 @@ function renderMercado(){
     '<div class="hud"><div class="bar"><i style="width:'+(done/mercado.items.length*100)+'%"></i></div>'+
       '<span class="streak '+(mercado.streak?"":"cold")+'">'+icon("estrella",13)+(mercado.streak||0)+'</span></div>'+
     '<div class="askrow">'+
-      '<span class="line">¿Y esto qué es, pues?</span></div>'+
+      '<span class="line">'+bi("So, what's this then?","¿Y esto qué es, pues?")+'</span></div>'+
     '<div class="opts">'+mercado.opts.map(function(o,n){
       let c="opt";
       if(mercado.answered!==null){

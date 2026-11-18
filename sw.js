@@ -1,6 +1,6 @@
 /* Service worker: keeps the app working with no signal.
    Bump CACHE when you publish changes, so phones pick them up. */
-const CACHE = "salvadorenismos-v13";
+const CACHE = "salvadorenismos-v16";
 const ASSETS = [
   "./",
   "index.html",
