@@ -65,8 +65,10 @@
   .mute:active{transform:translate(3px,3px);box-shadow:none}
 
   /* ---------- the scene, shared by Palabras and Mercado ---------- */
+  /* the same landscape picture as the game (backdrop.png) */
   .banner{position:relative;height:152px;border:var(--bd);box-shadow:var(--sh);
-    background:#fff;overflow:hidden;margin-bottom:14px}
+    background:#1b4636 url("backdrop.png") center bottom/cover no-repeat;
+    overflow:hidden;margin-bottom:14px}
   .banner span{position:absolute;line-height:0}
   /* The sol is first in the markup, so it sits behind everything else and
      genuinely rises from behind the volcán and sets behind the church and
@@ -158,6 +160,9 @@
   .entry .word{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;line-height:1.15}
   .entry .gloss{font-size:15.5px;margin-top:2px}
   .entry .ex{font-style:italic;font-size:14.5px;margin-top:7px;color:var(--blue)}
+  /* the English under the Spanish example, a little quieter */
+  .entry .exen{font-size:13.5px;margin-top:2px;color:var(--ink);opacity:.7}
+  .chip:disabled{opacity:.45}
   .entry .flag{font-size:13px;margin-top:8px;padding:7px 9px;background:var(--paper-2);
     border-left:5px solid var(--achiote)}
   .tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;
@@ -263,7 +268,7 @@
   <div class="mast">
     <span class="flagbox" id="mastflag"></span>
     <h1>Vos Salvadoreñismos<small>voseo &amp; caliche</small></h1>
-    <button class="mute" id="mute">Sound on</button>
+    <button class="mute" id="mute">Turn Sound Off</button>
   </div>
   <div id="scene"></div>
   <main id="view"></main>
@@ -275,336 +280,336 @@
    Edit those spreadsheets, not this block — anything typed here is
    overwritten the next time build.py runs. ==== */
 const WORDS = [
-  {id:"chivo", w:"chivo", g:"cool, great, awesome", ex:"¡Qué chivo tu carro!", t:"caliche"},
-  {id:"puchica", w:"puchica", g:"mild exclamation — surprise, frustration, awe", ex:"¡Puchica, se me olvidó!", t:"caliche", note:"A softened stand-in for a much cruder word. Safe with grandparents."},
-  {id:"cipote", w:"cipote / cipota", g:"kid, child", ex:"Ese cipote no se está quieto.", t:"nawat"},
-  {id:"bicho", w:"bicho", g:"a kid — a boy", ex:"Los bichos ya se durmieron.", t:"caliche", note:"Masculine. The feminine is bicha. Affectionate from family, dismissive from a stranger. Tone carries it."},
-  {id:"bicha", w:"bicha", g:"a kid — a girl", ex:"Y bien educada la bicha.", t:"caliche", note:"Feminine of bicho. Affectionate from family, dismissive from a stranger. Tone carries it."},
-  {id:"maje", w:"maje", g:"dude, guy — or idiot", ex:"¿Qué ondas, maje?", t:"caliche", note:"Between friends it's neutral. Aimed at someone you don't know, it's an insult."},
-  {id:"chero", w:"chero / chera", g:"close friend, buddy", ex:"Voy a salir con mis cheros.", t:"caliche"},
-  {id:"alero", w:"alero", g:"a close friend, your right hand", ex:"Él es mi alero desde la escuela.", t:"caliche"},
-  {id:"cabal", w:"cabal", g:"exactly, right, spot on", ex:"—A las tres. —Cabal.", t:"caliche"},
-  {id:"vaya-pues", w:"vaya pues", g:"alright then — also used to say goodbye", ex:"Vaya pues, nos vemos mañana.", t:"frase", note:"The most Salvadoran phrase there is. Closes conversations, agrees, softens, fills silence."},
-  {id:"pisto", w:"pisto", g:"money", ex:"No ando pisto.", t:"caliche"},
-  {id:"paja", w:"paja", g:"a lie, nonsense, BS", ex:"No hablés paja.", t:"caliche"},
-  {id:"casaka", w:"casaka", g:"a tall tale, a made-up story", ex:"Eso es pura casaka.", t:"caliche"},
-  {id:"chambre", w:"chambre", g:"gossip", ex:"Contame el chambre.", t:"caliche"},
-  {id:"chambroso", w:"chambroso / chambrosa", g:"a gossip, someone who talks", ex:"No seás chambrosa.", t:"caliche"},
-  {id:"goma", w:"goma", g:"hangover", ex:"Ando de goma.", t:"caliche"},
-  {id:"bolo", w:"bolo / bola", g:"drunk", ex:"Se puso bolo en la fiesta.", t:"caliche"},
-  {id:"birria", w:"birria", g:"beer", ex:"Vamos por unas birrias.", t:"caliche"},
-  {id:"guaro", w:"guaro", g:"hard liquor, booze", ex:"Trajeron guaro.", t:"caliche"},
-  {id:"cachimbo", w:"cachimbo", g:"a ton, a whole lot", ex:"Había un cachimbo de gente.", t:"caliche"},
-  {id:"chunche", w:"chunche", g:"thing, whatsit, doohickey", ex:"Pasame ese chunche.", t:"caliche"},
-  {id:"yuca", w:"yuca", g:"hard, difficult", ex:"Está yuca la tarea.", t:"caliche", note:"Also the actual root vegetable. Context tells you which."},
-  {id:"bayunco", w:"bayunco / bayunca", g:"crude, tacky, acting the fool", ex:"No seás bayunco.", t:"caliche"},
-  {id:"cheque", w:"cheque", g:"okay, got it, will do", ex:"Cheque, ahí nos vemos.", t:"caliche"},
-  {id:"simon", w:"simón", g:"yeah, yep", ex:"—¿Vas a venir? —Simón.", t:"caliche"},
-  {id:"va", w:"va", g:"right? okay? — tacked onto the end of a sentence", ex:"Nos vemos el sábado, va.", t:"frase"},
-  {id:"que-ondas", w:"¿Qué ondas?", g:"what's up?", ex:"¿Qué ondas, chera?", t:"frase"},
-  {id:"guanaco", w:"guanaco / guanaca", g:"a Salvadoran — what Salvadorans call themselves", ex:"Somos guanacos de corazón.", t:"caliche", note:"Warm and proud from a Salvadoran. Don't use it about someone until you've heard them use it about themselves."},
-  {id:"chele", w:"chele / chela", g:"light-skinned or fair-haired person", ex:"El chele que vive enfrente.", t:"caliche", note:"Descriptive rather than hostile, but it is a comment on appearance."},
-  {id:"la-mara", w:"la mara", g:"the crowd, your group of friends", ex:"Vino toda la mara.", t:"caliche", note:"Also the word for gangs. Older Salvadorans use it innocently for 'the gang' of friends; be careful where and how you say it."},
-  {id:"hacer-la-campana", w:"hacer la campaña", g:"to do someone a favor", ex:"Hacéme la campaña y llevame.", t:"frase"},
-  {id:"tener-pena", w:"tener pena", g:"to be embarrassed or shy — not 'to feel pity'", ex:"Me da pena preguntarle.", t:"trampa", note:"In Spain this means grief. In El Salvador it's embarrassment. Big difference."},
-  {id:"ahorita", w:"ahorita", g:"in a bit, shortly — rarely 'right now'", ex:"Ahorita voy.", t:"trampa", note:"Textbooks say 'right now.' In practice it can mean anywhere from two minutes to this evening."},
-  {id:"cuilio", w:"cuilio", g:"cop", ex:"Ahí vienen los cuilios.", t:"caliche", note:"Slang and not respectful. Fine among friends, not to an officer's face."},
-  {id:"pupusa", w:"pupusa", g:"the thick stuffed masa tortilla — the national dish", ex:"Vamos a la pupusería.", t:"nawat"},
-  {id:"guisquil", w:"güisquil", g:"chayote squash", ex:"Sopa de güisquil.", t:"nawat"},
-  {id:"chumpe", w:"chumpe", g:"turkey", ex:"Para Navidad hacemos chumpe.", t:"nawat"},
-  {id:"tunco", w:"tunco", g:"pig, pork", ex:"Carne de tunco.", t:"nawat"},
-  {id:"jocote", w:"jocote", g:"a small tart plum-like fruit", ex:"Jocotes en miel.", t:"nawat"},
-  {id:"guishte", w:"guishte", g:"a shard of broken glass", ex:"Cuidado, hay guishte.", t:"nawat", note:"No standard Spanish equivalent. Salvadorans are often surprised other countries don't have this word."},
-  {id:"pashte", w:"pashte", g:"loofah gourd, scrubbing sponge", ex:"Bañate con el pashte.", t:"nawat"},
-  {id:"guacal", w:"guacal", g:"a plastic or gourd basin, bowl", ex:"Echale agua con el guacal.", t:"nawat"},
-  {id:"apaste", w:"apaste", g:"a large clay pot", ex:"El apaste del agua.", t:"nawat"},
-  {id:"comal", w:"comal", g:"flat griddle for tortillas", ex:"Poné las tortillas en el comal.", t:"nawat"},
-  {id:"tecomate", w:"tecomate", g:"a gourd used as a container", ex:"Tomaba agua del tecomate.", t:"nawat"},
-  {id:"petate", w:"petate", g:"woven reed sleeping mat", ex:"Dormía en un petate.", t:"nawat"},
-  {id:"chipilin", w:"chipilín", g:"an edible leaf, cooked into tamales and soup", ex:"Tamales de chipilín.", t:"nawat"},
-  {id:"ayote", w:"ayote", g:"squash, pumpkin", ex:"Dulce de ayote.", t:"nawat"},
-  {id:"elote", w:"elote", g:"corn on the cob", ex:"Elote loco.", t:"nawat"},
-  {id:"milpa", w:"milpa", g:"a cornfield", ex:"Mi abuelo trabajaba la milpa.", t:"nawat"},
-  {id:"nixtamal", w:"nixtamal", g:"corn cooked with lime, ready to grind for masa", ex:"Moler el nixtamal.", t:"nawat"},
-  {id:"chapulin", w:"chapulín", g:"grasshopper", ex:"Saltó como chapulín.", t:"nawat"},
-  {id:"shuco", w:"shuco", g:"dirty, grimy — also a fermented corn drink (atol shuco)", ex:"Andás bien shuco.", t:"nawat"},
-  {id:"chiche", w:"chiche", g:"easy, a breeze", ex:"Está chiche el examen.", t:"nawat", note:"Also slang for a breast. Salvadorans use it for 'easy' constantly and the double meaning rarely registers, but now you know."},
-  {id:"chucho", w:"chucho", g:"dog, mutt", ex:"Ese chucho viene todos los días, el sinvergüenza.", t:"caliche", note:"The everyday word for 'dog' in El Salvador."},
-  {id:"vos", w:"vos", g:"you (informal)", ex:"¿Y vos dónde aprendiste eso?", t:"caliche", note:"Replaces tú almost entirely in El Salvador. The Vos tab covers how the verbs change."},
-  {id:"vos-final", w:"vos (al final)", g:"'man', 'hey' — a friendly tag on the end of a sentence", ex:"¡Ay, no, vos!", t:"frase", note:"This is what replaces hombre in El Salvador."},
-  {id:"hombre-acc", w:"hombré", g:"man, hey", ex:"¡Hombré, cuánto tiempo!", t:"caliche", note:"If you do hear hombre here, the stress lands on the last syllable."},
-  {id:"pues", w:"pues / pue'", g:"well, then, so", ex:"Sí pues. Hoy no ando mucho pisto.", t:"frase", note:"Sentence filler. Very Salvadoran tacked onto the end."},
-  {id:"puya", w:"¡Puya!", g:"Whoa! Wow!", ex:"¡Puya! Subió el precio, ¿verdá?", t:"caliche", note:"Surprise, usually at a price or a piece of news."},
-  {id:"ideay", w:"¡Ideay!", g:"Really? Huh!", ex:"¡Ideay! ¿Y vos qué hacés aquí?", t:"caliche", note:"Surprise or gentle challenge."},
-  {id:"chulada", w:"chulada / chulito", g:"a darling, a cutie", ex:"¡Ay, qué chulada de niña!", t:"caliche", note:"Warm and very common with children."},
-  {id:"mi-amor", w:"mi amor / mi cielo", g:"sweetheart, dear", ex:"Mirá, mi amor. Se pone la masa aquí, así...", t:"frase", note:"Used freely with children, even by strangers."},
-  {id:"mijo", w:"mi'jo / mi'ja", g:"son / dear", ex:"Todo está caro, mi'jo.", t:"caliche", note:"From mi hijo. Warm, used by older people."},
-  {id:"nina-titulo", w:"niña + name", g:"Miss / Ma'am + name", ex:"¡Buenas, niña Chayo!", t:"frase", note:"Respectful address for an older woman, whatever her age. It has nothing to do with being young."},
-  {id:"comadre", w:"comadre", g:"close family friend, godmother", ex:"Ella es mi comadre. Somos cheras de años.", t:"caliche", note:"A bond, not just a friendship."},
-  {id:"cachada", w:"cachada", g:"a bargain, a deal", ex:"Dejámelo en tres, va. Es una cachada para vos.", t:"caliche", note:"A price break given as a favor."},
-  {id:"esta-yuca", w:"está yuca", g:"it's hard, it's a long shot", ex:"Está yuca, pero hay fe.", t:"frase", note:"Literally 'it's cassava.' Very Salvadoran."},
-  {id:"buena-onda", w:"buena onda", g:"good people, kind, cool", ex:"Es usted bien buena onda.", t:"frase", note:"Of a person or a situation."},
-  {id:"babosada", w:"babosada / babosadas", g:"nonsense", ex:"Dejate de babosadas.", t:"caliche", note:"Dejate de babosadas = oh, stop that."},
-  {id:"me-regala", w:"¿Me regala...?", g:"Could I have...? May I get...?", ex:"¿Me regala unas servilletas?", t:"frase", note:"Central American politeness. Nothing is actually free."},
-  {id:"como-amanecio", w:"¿Cómo amaneció?", g:"How are you this morning?", ex:"¡Niña Tere! ¿Cómo amaneció?", t:"frase", note:"Literally 'how did you wake up?'"},
-  {id:"dios-se-lo-pague", w:"Dios se lo pague", g:"God bless you / thank you", ex:"Gracias, niña. Dios se lo pague.", t:"frase", note:"Warm thanks, especially for a kindness."},
-  {id:"que-dios-los-acompane", w:"Que Dios los acompañe", g:"God be with you", ex:"Adiós, mi amor. ¡Que Dios los acompañe!", t:"frase", note:"A blessing said at parting."},
-  {id:"no-te-perdas", w:"no te perdás", g:"don't be a stranger", ex:"Vaya pues, no te perdás.", t:"frase", note:"Standard warm goodbye."},
-  {id:"ruidera", w:"ruidera", g:"a racket, loud noise", ex:"¡Qué ruidera hace esa ruta!", t:"caliche", note:"From ruido."},
-  {id:"minuta", w:"minuta", g:"shaved ice with syrup", ex:"Yo vendía minutas cuando era cipote.", t:"comida", note:"Classic street treat for kids."},
-  {id:"curtido", w:"curtido", g:"pickled cabbage slaw", ex:"Sírvanse curtido y salsa, ahí está.", t:"comida", note:"Always served with pupusas."},
-  {id:"revuelta", w:"revuelta", g:"a 'mixed' pupusa", ex:"Deme dos revueltas y una de queso con loroco.", t:"comida", note:"Beans, cheese and chicharrón together."},
-  {id:"loroco", w:"loroco", g:"an edible flower bud", ex:"Deme dos revueltas y una de queso con loroco.", t:"comida", note:"Queso con loroco is a classic filling."},
-  {id:"chicharron", w:"chicharrón", g:"seasoned ground pork", ex:"Una pupusa de chicharrón, porfa.", t:"comida", note:"In pupusas it's ground, not crispy rind."},
-  {id:"masa", w:"masa", g:"corn dough", ex:"Se pone la masa aquí, así...", t:"comida", note:"What pupusas are made from."},
-  {id:"horchata", w:"horchata", g:"morro-seed drink", ex:"Deme una horchata, porfa.", t:"comida", note:"Salvadoran horchata is seed-based, not rice-based."},
-  {id:"chan", w:"chan", g:"chia-seed drink", ex:"Hay horchata, chan y atol de elote.", t:"comida", note:"Served cold with lime."},
-  {id:"atol-de-elote", w:"atol de elote", g:"sweet warm corn drink", ex:"Yo quiero atol de elote.", t:"comida", note:"A children's favorite."},
-  {id:"la-selecta", w:"la Selecta", g:"the national soccer team", ex:"¿Van a ver el partido de la Selecta?", t:"cultura", note:"Short for La Selección."},
-  {id:"chalate", w:"Chalate", g:"Chalatenango", ex:"Yo soy de Chalate.", t:"cultura", note:"Short form of the department's name."},
-  {id:"olocuilta", w:"Olocuilta", g:"town famous for rice pupusas", ex:"Esas son de Olocuilta.", t:"cultura", note:"On the road to the airport."},
-  {id:"hamaca", w:"hamaca", g:"hammock", ex:"Acostate en la hamaca.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
-  {id:"iglesia", w:"iglesia", g:"church", ex:"La iglesia está en el centro.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
-  {id:"piramide", w:"pirámide", g:"pyramid", ex:"Subimos a la pirámide.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
-  {id:"volcan", w:"volcán", g:"volcano", ex:"Desde aquí se ve el volcán.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
-  {id:"bandera", w:"bandera", g:"flag", ex:"La bandera es azul y blanca.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
-  {id:"tortuga", w:"tortuga", g:"turtle", ex:"Vimos una tortuga en la playa.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
-  {id:"torogoz", w:"Torogoz", g:"El Salvador's national bird", ex:"El torogoz mueve la cola como un reloj.", t:"cultura", note:"Often called pájaro reloj (clock bird), because the back-and-forth movement of its long tail resembles a pendulum clock."},
-  {id:"que-haces", w:"¿qué hacés?", g:"what are you up to?", ex:"¿Qué hacés, vos? ¿Querés salir?", t:"frase", note:"Vos form of ¿qué haces?"},
-  {id:"que-contas", w:"¿qué contás?", g:"what's new? — lit. what do you tell?", ex:"¿Qué contás? Hace rato no te veía.", t:"frase"},
-  {id:"que-paso", w:"¿qué pasó?", g:"hey, what's going on? — a greeting", ex:"¡Qué pasó, chero! ¿Cómo vas?", t:"frase", note:"Works as a hello, not only as \"what happened?\""},
-  {id:"adios", w:"adiós", g:"hi — said in passing", ex:"—¡Adiós, doña Rosa! —¡Adiós, mija!", t:"trampa", note:"On the street it's a greeting when you pass someone without stopping, not a goodbye."},
-  {id:"aqui-nomas", w:"aquí, nomás", g:"just here, getting by — reply to how are you", ex:"—¿Cómo estás? —Aquí, nomás, pasándola.", t:"frase"},
-  {id:"que-dios-le-bendiga", w:"que Dios le bendiga", g:"God bless you — a warm send-off", ex:"Andá con cuidado, que Dios te bendiga.", t:"frase", note:"Often from elders. Also: Dios me lo bendiga."},
-  {id:"ahi-nos-vidrios", w:"ahí nos vidrios", g:"see ya — a pun on nos vemos", ex:"Vaya pues, ahí nos vidrios.", t:"frase", note:"Jokey and informal."},
-  {id:"pase-adelante", w:"pase adelante", g:"come on in", ex:"Pase adelante, está en su casa.", t:"frase", note:"What a host says at the door."},
-  {id:"fijese-que", w:"fíjese que…", g:"well, you see… — softens bad news", ex:"Fíjese que ya no hay pupusas de loroco.", t:"frase", note:"Vos form: fijate que…"},
-  {id:"a-la-gran-puchica", w:"¡a la gran puchica!", g:"oh my goodness! — stronger than puchica", ex:"¡A la gran puchica, qué susto me diste!", t:"frase"},
-  {id:"ve", w:"¡ve!", g:"look! hey, listen", ex:"Ve, ¿y vos qué hacés aquí?", t:"caliche", note:"Grabs attention, like ¡mirá!"},
-  {id:"fijate", w:"¡fijate!", g:"imagine that! get this", ex:"Fijate que me saqué la lotería.", t:"frase"},
-  {id:"nel", w:"nel", g:"nope", ex:"—¿Vas a ir? —Nel, ando cansado.", t:"caliche", note:"Slangy no. Pairs with simón."},
-  {id:"de-a-viaje", w:"¡de a viaje!", g:"absolutely! for sure!", ex:"—¿Vamos a la playa? —¡De a viaje!", t:"frase"},
-  {id:"puro", w:"puro / pura", g:"just like, exactly like", ex:"Ese cipote es puro su papá.", t:"caliche"},
-  {id:"a-puro-tubo", w:"a puro tubo", g:"barely, by force, just making it", ex:"Pasé el examen a puro tubo.", t:"frase"},
-  {id:"primero-dios", w:"primero Dios", g:"God willing — lit. God first", ex:"Primero Dios, llego mañana.", t:"frase", note:"Attached to almost any plan."},
-  {id:"me-regala-la-cuenta", w:"¿me regala la cuenta?", g:"can I have the check?", ex:"Niña, ¿me regala la cuenta, por favor?", t:"frase"},
-  {id:"regaleme", w:"regáleme…", g:"I'll have… — lit. gift me", ex:"Regáleme tres revueltas y una horchata.", t:"frase", note:"Polite even when you're paying."},
-  {id:"a-como-esta", w:"¿a cómo está?", g:"how much is it? — market phrasing", ex:"¿A cómo están los jocotes?", t:"frase"},
-  {id:"alla-abajito", w:"allá abajito", g:"just down there", ex:"La tienda queda allá abajito.", t:"frase", note:"Also allá arribita: just up there."},
-  {id:"a-las-quinientas", w:"a las quinientas", g:"very late, at the last minute", ex:"Siempre llega a las quinientas.", t:"frase"},
-  {id:"ahoritita", w:"ahoritita", g:"right this second", ex:"Lo hago ahoritita, no ahorita.", t:"caliche", note:"Extra -it- makes it truly now, unlike ahorita."},
-  {id:"cachimbon", w:"cachimbón / cachimbona", g:"awesome, excellent, really skilled", ex:"Esa banda es cachimbona.", t:"caliche", note:"A little coarse. Fine with friends, not with grandma."},
-  {id:"galan", w:"galán", g:"nice, cool — also handsome", ex:"Qué galán te quedó el dibujo.", t:"caliche"},
-  {id:"chamba", w:"chamba", g:"job, work", ex:"Ando buscando chamba.", t:"caliche", note:"Verb: chambear, to work."},
-  {id:"jana", w:"jaña / jaño", g:"girlfriend / boyfriend", ex:"Andá a traer a tu jaña.", t:"familia"},
-  {id:"jalar", w:"jalar", g:"to date, go out with someone", ex:"¿Ustedes jalan?", t:"caliche", note:"Also just \"to pull\"."},
-  {id:"salado", w:"salado / salada", g:"unlucky", ex:"Qué salado sos, otra vez perdiste.", t:"caliche"},
-  {id:"buzo", w:"buzo", g:"sharp, alert, on the ball", ex:"Ponete buzo, que ahí viene el profe.", t:"caliche"},
-  {id:"clavo", w:"clavo", g:"a problem, a hassle", ex:"¡Qué clavo! Se me fue el bus.", t:"caliche", note:"Hacer un clavo = to make a mess of things."},
-  {id:"hartar", w:"hartar", g:"to eat — a lot", ex:"Vamos a hartar pupusas.", t:"caliche", note:"Informal."},
-  {id:"dar-jalon", w:"dar jalón", g:"to give someone a ride", ex:"¿Me das jalón al centro?", t:"calle"},
-  {id:"chotear", w:"chotear", g:"to look, watch, check out", ex:"Choteá quién viene.", t:"caliche"},
-  {id:"capearse", w:"capearse", g:"to skip class", ex:"Se capeó la clase de matemática.", t:"caliche"},
-  {id:"cerote", w:"cerote", g:"jerk — or dude, among friends", ex:"¿Qué ondas, cerote?", t:"caliche", note:"Crude: literally a lump of excrement. Only with close friends."},
-  {id:"encachimbado", w:"encachimbado / encachimbada", g:"furious", ex:"Mi papá está encachimbado.", t:"caliche", note:"Coarse."},
-  {id:"achicopalado", w:"achicopalado / achicopalada", g:"discouraged, down, timid", ex:"No te achicopalés, vos podés.", t:"caliche", note:"Verb: achicopalarse."},
-  {id:"chulon", w:"chulón / chulona", g:"naked", ex:"El cipote anda chulón por el patio.", t:"caliche"},
-  {id:"chuna", w:"chuña", g:"barefoot", ex:"No andés chuña, te vas a cortar.", t:"caliche"},
-  {id:"hermano-lejano", w:"hermano lejano", g:"a Salvadoran living abroad — lit. distant sibling", ex:"Los hermanos lejanos vienen para diciembre.", t:"familia", note:"Official and popular term for the diaspora."},
-  {id:"bolarse", w:"bolarse", g:"to get drunk", ex:"Se bolaron en la fiesta.", t:"caliche", note:"From bolo, drunk."},
-  {id:"chambrear", w:"chambrear", g:"to gossip", ex:"Dejen de chambrear.", t:"caliche"},
-  {id:"enchutar", w:"enchutar", g:"to stick in, insert", ex:"Enchutá el cable.", t:"casa"},
-  {id:"guindar", w:"guindar", g:"to hang (a hammock, clothes)", ex:"Guindá la hamaca en el corredor.", t:"casa"},
-  {id:"apiarse", w:"apiarse", g:"to get down, get off", ex:"¡Apiate de ese palo!", t:"calle", note:"From apearse. On a bus: Me apeo en la esquina."},
-  {id:"ir-a-traer", w:"ir a traer", g:"to go get, fetch", ex:"Andá a traer agua a la pila.", t:"casa"},
-  {id:"andar", w:"andar", g:"to have on you — also to go around", ex:"¿Andás pisto?", t:"caliche", note:"\"¿Andás pisto?\" = do you have money on you?"},
-  {id:"un-vergo", w:"un vergo", g:"a lot, a ton", ex:"Había un vergo de gente.", t:"caliche", note:"Crude. Un montón is the clean version."},
-  {id:"nana", w:"nana", g:"mother — rural", ex:"Mi nana hacía las mejores tortillas.", t:"familia", note:"Elsewhere it often means nanny or grandma."},
-  {id:"tata", w:"tata", g:"father — rural, older usage", ex:"Mi tata trabajaba en la milpa.", t:"familia"},
-  {id:"cuache", w:"cuache / cuacha", g:"twin", ex:"Ellas son cuaches.", t:"nawat", note:"From Nawat coat, twin. Gemelo is the standard word."},
-  {id:"cumiche", w:"cumiche", g:"the youngest child of the family", ex:"Ella es la cumiche de la casa.", t:"familia"},
-  {id:"tierno", w:"tierno / tierna", g:"a baby, infant", ex:"Tiene un tierno de tres meses.", t:"familia"},
-  {id:"chinear", w:"chinear", g:"to carry a child in your arms", ex:"¡Mamá, chinéame!", t:"familia"},
-  {id:"pacha", w:"pacha", g:"baby bottle", ex:"Calentá la pacha del tierno.", t:"familia", note:"Also a flat flask."},
-  {id:"concuno", w:"concuño / concuña", g:"your spouse's sibling's spouse", ex:"Mi concuña viene el domingo.", t:"familia", note:"A relationship English has no word for."},
-  {id:"companero-de-vida", w:"compañero / compañera de vida", g:"life partner", ex:"Él es mi compañero de vida.", t:"familia", note:"Common for couples who aren't married."},
-  {id:"canilla", w:"canilla", g:"shin — also a skinny leg", ex:"Me pegué en la canilla.", t:"caliche"},
-  {id:"colocho", w:"colocho / colocha", g:"curly-haired — also a curl", ex:"La niña tiene el pelo colocho.", t:"caliche", note:"Common nickname: el Colocho, la Colocha."},
-  {id:"cholco", w:"cholco / cholca", g:"missing teeth, toothless", ex:"Quedó cholco después del pleito.", t:"caliche"},
-  {id:"choco", w:"choco / choca", g:"blind, or blind in one eye", ex:"El chucho está choco.", t:"caliche"},
-  {id:"jiote", w:"jiote", g:"skin rash, scaly patches", ex:"Le salió jiote en el brazo.", t:"nawat", note:"Also the name of a tree with red peeling bark."},
-  {id:"nacido", w:"nacido", g:"a boil, abscess", ex:"Le salió un nacido en la pierna.", t:"caliche"},
-  {id:"sobador", w:"sobador / sobadora", g:"folk healer who treats by massage", ex:"Llevalo donde la sobadora.", t:"cultura"},
-  {id:"pacho", w:"pacho / pacha", g:"flat", ex:"La llanta está pacha.", t:"caliche"},
-  {id:"champa", w:"champa", g:"shack, simple hut", ex:"Vivían en una champa a la orilla del río.", t:"casa"},
-  {id:"pasaje", w:"pasaje", g:"small residential lane", ex:"Vivo en el pasaje 3 de la colonia.", t:"calle", note:"Also means fare or ticket."},
-  {id:"poyo", w:"poyo", g:"clay hearth for cooking with wood", ex:"Las tortillas se echan en el comal sobre el poyo.", t:"casa"},
-  {id:"metate", w:"metate", g:"grinding stone for corn", ex:"Mi abuela molía el maíz en la piedra de moler.", t:"nawat", note:"Also called piedra de moler."},
-  {id:"porra", w:"porra", g:"large cooking pot", ex:"Hay una porra de frijoles en la cocina.", t:"casa"},
-  {id:"pichel", w:"pichel", g:"pitcher", ex:"Traé el pichel de fresco.", t:"casa"},
-  {id:"pana", w:"pana", g:"basin, mixing bowl", ex:"Echá la masa en la pana.", t:"casa"},
-  {id:"mecate", w:"mecate", g:"rope", ex:"Amarrá la vaca con el mecate.", t:"nawat"},
-  {id:"candela", w:"candela", g:"candle — also a flame, fire", ex:"Se fue la luz, prendé una candela.", t:"casa"},
-  {id:"tapesco", w:"tapesco", g:"raised platform of sticks or cane, used as a bed or shelf", ex:"Pusimos el maíz en el tapesco.", t:"nawat"},
-  {id:"chamarra", w:"chamarra", g:"blanket", ex:"Traé la chamarra, está haciendo frío.", t:"trampa", note:"In Mexico chamarra is a jacket. In El Salvador it's a blanket — the jacket is a chumpa."},
-  {id:"gavetero", w:"gavetero", g:"chest of drawers", ex:"La ropa está en el gavetero.", t:"casa", note:"Gaveta = drawer."},
-  {id:"pila", w:"pila", g:"concrete water tank with a built-in washboard", ex:"Fui a lavar la ropa a la pila.", t:"casa", note:"The heart of the Salvadoran patio. Also means battery."},
-  {id:"corvo", w:"corvo", g:"machete", ex:"Llevá el corvo para chapodar.", t:"casa", note:"A cuma is the curved kind."},
-  {id:"guamil", w:"guamil", g:"fallow land overgrown with brush", ex:"Ese terreno ya es puro guamil.", t:"naturaleza"},
-  {id:"zacate", w:"zacate", g:"grass, pasture", ex:"Las vacas están comiendo zacate.", t:"nawat"},
-  {id:"talpetate", w:"talpetate", g:"hard, compacted volcanic soil", ex:"No se puede sembrar, es puro talpetate.", t:"nawat", note:"Tal = earth."},
-  {id:"tetunte", w:"tetunte", g:"a stone, chunk of rock", ex:"Se tropezó con un tetunte.", t:"nawat", note:"Tet = stone."},
-  {id:"canton", w:"cantón", g:"rural district within a municipality", ex:"Mis abuelos son de un cantón de Chalatenango.", t:"calle"},
-  {id:"invierno", w:"invierno", g:"the rainy season, about May to October", ex:"En invierno llueve todas las tardes.", t:"trampa", note:"Not winter. Salvadoran \"winter\" is the hot, wet season."},
-  {id:"verano", w:"verano", g:"the dry season, about November to April", ex:"En verano se seca la quebrada.", t:"trampa", note:"Not summer in the English sense."},
-  {id:"temporal", w:"temporal", g:"days of steady, nonstop rain", ex:"Con este temporal no se puede salir.", t:"naturaleza"},
-  {id:"chipi-chipi", w:"chipi-chipi", g:"drizzle", ex:"Está cayendo un chipi-chipi.", t:"naturaleza"},
-  {id:"maquilishuat", w:"maquilishuat", g:"pink trumpet tree — the national tree", ex:"Ya florecieron los maquilishuat.", t:"nawat", note:"Its pink blossoms appear in the dry season."},
-  {id:"conacaste", w:"conacaste", g:"guanacaste or ear tree", ex:"Descansamos bajo el conacaste.", t:"nawat"},
-  {id:"amate", w:"amate", g:"wild fig tree", ex:"El amate de la plaza es centenario.", t:"nawat"},
-  {id:"morro", w:"morro", g:"calabash tree — its seeds go in horchata", ex:"La horchata salvadoreña se hace con semilla de morro.", t:"naturaleza"},
-  {id:"chilamate", w:"chilamate", g:"strangler fig", ex:"El chilamate se comió el otro árbol.", t:"nawat"},
-  {id:"madrecacao", w:"madrecacao", g:"gliricidia, a shade tree for coffee", ex:"Los cafetales tienen madrecacao para la sombra.", t:"naturaleza"},
-  {id:"pito", w:"pito", g:"coral tree — its flowers are eaten", ex:"Hicimos huevos con flor de pito.", t:"naturaleza"},
-  {id:"palo", w:"palo", g:"tree — in everyday speech", ex:"Se subió al palo de mango.", t:"naturaleza"},
-  {id:"aguacate", w:"aguacate", g:"avocado", ex:"Echale aguacate a la sopa.", t:"nawat", note:"From Nawat. Used across Mexico and Central America."},
-  {id:"zapote", w:"zapote", g:"sapote fruit", ex:"El zapote está bien maduro.", t:"nawat"},
-  {id:"nance", w:"nance", g:"small yellow fruit, also preserved in guaro", ex:"Compré una bolsa de nances.", t:"naturaleza"},
-  {id:"cuajinicuil", w:"cuajinicuil", g:"ice-cream-bean pod (Inga)", ex:"El cuajinicuil es dulce como algodón.", t:"nawat", note:"Relatives: paterna and pepeto."},
-  {id:"paterna", w:"paterna", g:"ice-cream-bean pod — sweet white pulp", ex:"Venden paternas en el mercado.", t:"naturaleza"},
-  {id:"guineo", w:"guineo", g:"banana", ex:"Llevate un guineo para el recreo.", t:"trampa", note:"Plátano is the plantain you cook."},
-  {id:"mora", w:"mora", g:"black nightshade greens", ex:"Pupusas de mora, por favor.", t:"trampa", note:"In a pupusa or soup it's the leafy green, not the berry."},
-  {id:"flor-de-izote", w:"flor de izote", g:"yucca flower — the national flower", ex:"Flor de izote con huevo para el desayuno.", t:"nawat", note:"Eaten, not just admired."},
-  {id:"pacaya", w:"pacaya", g:"palm flower, often fried in egg batter", ex:"Hoy hay pacaya envuelta.", t:"comida"},
-  {id:"pipian", w:"pipián", g:"summer squash", ex:"Sopa de pipián con queso.", t:"comida"},
-  {id:"ejote", w:"ejote", g:"green bean", ex:"Compré ejotes para la sopa.", t:"nawat"},
-  {id:"camote", w:"camote", g:"sweet potato", ex:"Camote en miel para el Día de los Difuntos.", t:"nawat"},
-  {id:"chile", w:"chile", g:"chili pepper", ex:"¿Lo querés con chile?", t:"nawat", note:"From Nawat chil."},
-  {id:"tomate", w:"tomate", g:"tomato", ex:"Cortá el tomate para el chirmol.", t:"nawat", note:"From Nawat tomat."},
-  {id:"achiote", w:"achiote", g:"annatto, a red-orange seasoning", ex:"El achiote le da el color a la gallina.", t:"nawat"},
-  {id:"xiquilite", w:"xiquilite", g:"indigo plant", ex:"El añil se saca del xiquilite.", t:"nawat", note:"Indigo was El Salvador's great colonial export."},
-  {id:"tule", w:"tule", g:"bulrush, reed", ex:"Hacen petates de tule.", t:"nawat"},
-  {id:"gallina-india", w:"gallina india", g:"free-range hen", ex:"La sopa de gallina india es la mejor.", t:"naturaleza"},
-  {id:"bestia", w:"bestia", g:"horse or mule — rural", ex:"Fueron al cerro en bestia.", t:"naturaleza"},
-  {id:"tacuacin", w:"tacuacín", g:"opossum", ex:"Un tacuacín se comió los pollitos.", t:"nawat"},
-  {id:"cusuco", w:"cusuco", g:"armadillo", ex:"Vimos un cusuco en el camino.", t:"naturaleza"},
-  {id:"garrobo", w:"garrobo", g:"spiny-tailed iguana", ex:"El garrobo se asolea en la piedra.", t:"naturaleza"},
-  {id:"pizote", w:"pizote", g:"coati", ex:"Los pizotes andan en manada.", t:"nawat"},
-  {id:"mapachin", w:"mapachín", g:"raccoon", ex:"Un mapachín se metió a la cocina.", t:"nawat"},
-  {id:"taltuza", w:"taltuza", g:"pocket gopher", ex:"La taltuza se está comiendo la milpa.", t:"nawat"},
-  {id:"tepezcuintle", w:"tepezcuintle", g:"paca, a large rodent", ex:"El tepezcuintle sale de noche.", t:"nawat"},
-  {id:"cotuza", w:"cotuza", g:"agouti", ex:"Una cotuza cruzó la quebrada.", t:"naturaleza"},
-  {id:"zope", w:"zope", g:"black vulture", ex:"Los zopes están volando en círculo.", t:"nawat", note:"Short for zopilote."},
-  {id:"zanate", w:"zanate", g:"great-tailed grackle", ex:"Los zanates hacen una bulla en la tarde.", t:"nawat", note:"The male is called clarinero."},
-  {id:"chiltota", w:"chiltota", g:"oriole", ex:"La chiltota hizo su nido colgado.", t:"nawat"},
-  {id:"pijuyo", w:"pijuyo", g:"groove-billed ani, a black bird", ex:"Los pijuyos andan entre el monte.", t:"naturaleza"},
-  {id:"tecolote", w:"tecolote", g:"owl", ex:"Anoche cantó el tecolote.", t:"nawat"},
-  {id:"zenzontle", w:"zenzontle", g:"mockingbird", ex:"El zenzontle imita a todos los pájaros.", t:"nawat", note:"From Nawat: four hundred voices."},
-  {id:"chocoyo", w:"chocoyo", g:"small parakeet", ex:"Una bandada de chocoyos pasó gritando.", t:"naturaleza"},
-  {id:"pishishe", w:"pishishe", g:"whistling duck", ex:"Los pishishes llegan a la laguna.", t:"naturaleza"},
-  {id:"gorrion", w:"gorrión", g:"hummingbird", ex:"Un gorrión llegó a las flores.", t:"trampa", note:"Elsewhere a gorrión is a sparrow. In El Salvador it's a hummingbird."},
-  {id:"zompopo", w:"zompopo", g:"leaf-cutter ant", ex:"Con las primeras lluvias salen los zompopos de mayo.", t:"nawat"},
-  {id:"chacuatete", w:"chacuatete", g:"praying mantis", ex:"Hay un chacuatete en la ventana.", t:"naturaleza"},
-  {id:"masacuata", w:"masacuata", g:"boa constrictor", ex:"Encontraron una masacuata en el gallinero.", t:"nawat"},
-  {id:"zumbadora", w:"zumbadora", g:"racer snake", ex:"La zumbadora corre bien rápido.", t:"naturaleza"},
-  {id:"tepocate", w:"tepocate", g:"tadpole", ex:"La poza está llena de tepocates.", t:"nawat"},
-  {id:"curil", w:"curil", g:"black mangrove clam", ex:"Un cóctel de curiles en el puerto.", t:"comida"},
-  {id:"punche", w:"punche", g:"mangrove crab", ex:"Compramos punches en el estero.", t:"comida"},
-  {id:"chacalin", w:"chacalín", g:"small river shrimp", ex:"Sopa de chacalín.", t:"comida"},
-  {id:"jute", w:"jute", g:"freshwater snail", ex:"Los jutes se cocinan con limón y chile.", t:"comida"},
-  {id:"pepesca", w:"pepesca", g:"small fried river fish", ex:"Yuca con pepesca, por favor.", t:"comida"},
-  {id:"guapote", w:"guapote", g:"rainbow bass, a freshwater fish", ex:"Comimos guapote frito en el lago.", t:"comida"},
-  {id:"pupuseria", w:"pupusería", g:"pupusa restaurant or stand", ex:"Vamos a la pupusería de la esquina.", t:"comida"},
-  {id:"pupusera", w:"pupusera", g:"woman who makes pupusas", ex:"La pupusera ya está echando.", t:"comida"},
-  {id:"queso-con-loroco", w:"queso con loroco", g:"cheese and loroco pupusa", ex:"Dos de queso con loroco.", t:"comida"},
-  {id:"frijol-con-queso", w:"frijol con queso", g:"bean and cheese pupusa", ex:"Una de frijol con queso para el cipote.", t:"comida"},
-  {id:"pupusa-de-arroz", w:"pupusa de arroz", g:"pupusa made with rice flour", ex:"En Olocuilta comimos pupusas de arroz.", t:"comida"},
-  {id:"tamales-pisques", w:"tamales pisques", g:"bean-filled tamales", ex:"Mi tía hace tamales pisques los domingos.", t:"comida"},
-  {id:"tamal-de-elote", w:"tamal de elote", g:"sweet fresh-corn tamal", ex:"Tamales de elote con crema.", t:"comida"},
-  {id:"tamales-de-gallina", w:"tamales de gallina", g:"hen tamales in banana leaf", ex:"Para Navidad hay tamales de gallina.", t:"comida", note:"Tamal comes from Nawat."},
-  {id:"ticucos", w:"ticucos", g:"bean tamales, often for Holy Week", ex:"En Semana Santa comemos ticucos.", t:"comida"},
-  {id:"riguas", w:"riguas", g:"fresh-corn cakes cooked in husk or leaf", ex:"Las riguas salen calientitas del comal.", t:"comida"},
-  {id:"panes-con-pollo", w:"panes con pollo", g:"chicken sandwiches in sauce", ex:"En Navidad no pueden faltar los panes con pollo.", t:"comida", note:"Also called panes rellenos."},
-  {id:"sopa-de-gallina-india", w:"sopa de gallina india", g:"free-range hen soup", ex:"Para la goma, una sopa de gallina india.", t:"comida"},
-  {id:"sopa-de-pata", w:"sopa de pata", g:"cow-foot and tripe soup", ex:"Los domingos hay sopa de pata.", t:"comida"},
-  {id:"mariscada", w:"mariscada", g:"creamy seafood soup", ex:"Pedimos una mariscada en La Libertad.", t:"comida"},
-  {id:"gallo-en-chicha", w:"gallo en chicha", g:"rooster stewed in fermented corn wine", ex:"Para la boda hicieron gallo en chicha.", t:"comida"},
-  {id:"casamiento", w:"casamiento", g:"rice and beans fried together", ex:"Desayuno de casamiento con huevo.", t:"comida", note:"Lit. \"marriage\"."},
-  {id:"frijoles-molidos", w:"frijoles molidos", g:"refried beans", ex:"Frijoles molidos con crema y queso duro.", t:"comida", note:"Also frijoles volteados."},
-  {id:"platanos-fritos", w:"plátanos fritos con crema", g:"fried plantains with cream", ex:"De postre, plátanos fritos con crema.", t:"comida"},
-  {id:"yuca-frita", w:"yuca frita", g:"fried cassava", ex:"Yuca frita con chicharrón y curtido.", t:"comida", note:"Yuca salcochada = boiled."},
-  {id:"chirmol", w:"chirmol", g:"fresh tomato-onion salsa", ex:"La carne asada lleva chirmol.", t:"comida"},
-  {id:"crema", w:"crema", g:"Salvadoran sour cream", ex:"Échele crema a los frijoles.", t:"comida"},
-  {id:"queso-duro", w:"queso duro", g:"hard, salty cheese", ex:"Un poquito de queso duro rallado.", t:"comida"},
-  {id:"quesillo", w:"quesillo", g:"soft melting cheese", ex:"Pupusas de quesillo.", t:"comida"},
-  {id:"elote-loco", w:"elote loco", g:"corn on the cob with mayo, ketchup, mustard and cheese", ex:"En las fiestas compramos elotes locos.", t:"comida"},
-  {id:"alguashte", w:"alguashte", g:"ground roasted squash seed", ex:"Mango verde con limón, sal y alguashte.", t:"nawat"},
-  {id:"quesadilla", w:"quesadilla", g:"sweet cheese pound cake", ex:"Café con quesadilla en la tarde.", t:"trampa", note:"Not the Mexican cheese tortilla."},
-  {id:"semita", w:"semita", g:"pastry filled with jam or panela", ex:"Una semita alta, por favor.", t:"comida"},
-  {id:"marquesote", w:"marquesote", g:"sponge cake", ex:"El marquesote es para la fiesta.", t:"comida"},
-  {id:"salpores", w:"salpores", g:"crumbly rice or corn cookies", ex:"Salpores de arroz con café.", t:"comida"},
-  {id:"nuegados", w:"nuégados", g:"yuca or corn fritters in panela syrup", ex:"Nuégados con chilate en Semana Santa.", t:"comida"},
-  {id:"empanadas-de-platano", w:"empanadas de plátano", g:"plantain turnovers filled with custard or beans", ex:"Empanadas de plátano con leche poleada.", t:"comida"},
-  {id:"leche-poleada", w:"leche poleada", g:"vanilla-cinnamon custard", ex:"La leche poleada va dentro de la empanada.", t:"comida"},
-  {id:"jocotes-en-miel", w:"jocotes en miel", g:"hog plums in syrup", ex:"Para el Día de los Difuntos hay jocotes en miel.", t:"comida", note:"Ayote en miel is the squash version."},
-  {id:"sorbete", w:"sorbete", g:"ice cream", ex:"Ahí viene el sorbetero.", t:"trampa", note:"Elsewhere sorbete can mean sorbet or a straw."},
-  {id:"charamusca", w:"charamusca", g:"frozen juice in a little plastic bag", ex:"Una charamusca de fresa.", t:"comida"},
-  {id:"fresco", w:"fresco", g:"fruit drink", ex:"Un fresco de tamarindo bien helado.", t:"comida"},
-  {id:"ensalada", w:"ensalada", g:"fruit punch with chopped fruit", ex:"Para tomar, una ensalada.", t:"trampa", note:"A drink as well as a salad."},
-  {id:"cebada", w:"cebada", g:"pink barley drink", ex:"La cebada es rosadita y dulce.", t:"comida"},
-  {id:"atol-shuco", w:"atol shuco", g:"fermented black-corn drink", ex:"Un atol shuco con frijoles y alguashte.", t:"comida", note:"Shuco is from Nawat."},
-  {id:"chilate", w:"chilate", g:"unsweetened spiced corn drink", ex:"El chilate se toma con nuégados.", t:"nawat"},
-  {id:"cafe-de-palo", w:"café de palo", g:"coffee brewed in a cloth filter", ex:"Mi abuela solo toma café de palo.", t:"comida"},
-  {id:"chocolate", w:"chocolate", g:"chocolate, hot chocolate", ex:"Un chocolate con pan dulce.", t:"nawat", note:"From Nawat, like cacao."},
-  {id:"kolashampan", w:"kolashampan", g:"Salvadoran orange-colored soda", ex:"Pupusas con Kolashampan.", t:"comida"},
-  {id:"boquitas", w:"boquitas", g:"bar snacks served with drinks", ex:"Pedimos unas boquitas con las cervezas.", t:"comida"},
-  {id:"la-napa", w:"la ñapa", g:"a little extra thrown in", ex:"Me dio dos mangos de ñapa.", t:"calle"},
-  {id:"menudo", w:"menudo", g:"coins, small change", ex:"No tengo menudo, solo billete.", t:"calle"},
-  {id:"cora", w:"cora", g:"25 cents, a quarter", ex:"Me falta una cora para el bus.", t:"calle"},
-  {id:"len", w:"len", g:"one cent", ex:"No tengo ni un len.", t:"calle"},
-  {id:"encomienda", w:"encomienda", g:"parcel sent between the US and El Salvador", ex:"Mandé una encomienda para mi mamá.", t:"cultura", note:"The courier is the encomendero."},
-  {id:"ropa-de-paca", w:"ropa de paca", g:"used clothing sold from imported bales", ex:"Encontré una chumpa en la ropa de paca.", t:"calle", note:"Also ropa americana."},
-  {id:"mudada", w:"mudada", g:"a change of clothes, an outfit", ex:"Llevá una mudada para la playa.", t:"casa"},
-  {id:"chumpa", w:"chumpa", g:"jacket", ex:"Ponete la chumpa, está haciendo frío.", t:"casa"},
-  {id:"calzoneta", w:"calzoneta", g:"swim trunks, swimsuit", ex:"No se te olvide la calzoneta.", t:"casa"},
-  {id:"blumer", w:"blúmer", g:"women's underwear", ex:"Compré blúmers en el mercado.", t:"casa", note:"From English bloomers."},
-  {id:"caites", w:"caites", g:"leather sandals", ex:"Andaba con sus caites viejos.", t:"nawat"},
-  {id:"yinas", w:"yinas", g:"flip-flops", ex:"Ponete las yinas para ir a la playa.", t:"casa"},
-  {id:"cincho", w:"cincho", g:"belt", ex:"Se me olvidó el cincho.", t:"casa"},
-  {id:"gabacha", w:"gabacha", g:"apron, smock", ex:"La pupusera se puso la gabacha.", t:"casa"},
-  {id:"dui", w:"DUI", g:"Salvadoran national ID card", ex:"Enseñe su DUI, por favor.", t:"calle", note:"Documento Único de Identidad."},
-  {id:"micro", w:"micro", g:"minibus", ex:"Me fui en micro hasta el centro.", t:"calle"},
-  {id:"la-ruta", w:"la ruta", g:"bus route — also the bus itself", ex:"¿Qué ruta me deja en Soya?", t:"calle"},
-  {id:"busero", w:"busero", g:"bus driver", ex:"El busero no quiso parar.", t:"calle"},
-  {id:"cobrador", w:"cobrador", g:"fare collector on a bus", ex:"El cobrador grita las paradas.", t:"calle"},
-  {id:"redondel", w:"redondel", g:"traffic circle, roundabout", ex:"Doblá en el redondel.", t:"calle"},
-  {id:"tumulo", w:"túmulo", g:"speed bump", ex:"Despacio, que viene un túmulo.", t:"calle"},
-  {id:"cerquita", w:"cerquita", g:"very close — supposedly", ex:"Es cerquita, como a diez cuadras.", t:"calle", note:"Don't take it too literally."},
-  {id:"rancho-de-playa", w:"rancho de playa", g:"beach house", ex:"Alquilamos un rancho de playa.", t:"calle"},
-  {id:"turicentro", w:"turicentro", g:"public recreation park with pools", ex:"El domingo vamos al turicentro.", t:"calle"},
-  {id:"ruta-de-las-flores", w:"Ruta de las Flores", g:"scenic route of mountain towns in the west", ex:"Fuimos a Juayúa por la Ruta de las Flores.", t:"cultura"},
-  {id:"la-seno", w:"la seño", g:"teacher — what kids call her", ex:"La seño nos dejó tarea.", t:"caliche", note:"Short for señorita. Also a polite \"ma'am\"."},
-  {id:"bolson", w:"bolsón", g:"backpack, school bag", ex:"Echá los cuadernos en el bolsón.", t:"caliche"},
-  {id:"lapicero", w:"lapicero", g:"pen", ex:"¿Me prestás un lapicero?", t:"caliche", note:"In Mexico: pluma."},
-  {id:"plumon", w:"plumón", g:"marker", ex:"Escribí con plumón en la cartulina.", t:"caliche"},
-  {id:"papelografo", w:"papelógrafo", g:"flip-chart paper", ex:"Hicimos la exposición en papelógrafo.", t:"cultura"},
-  {id:"aplazar", w:"aplazar", g:"to fail a class", ex:"Me aplazaron en matemática.", t:"caliche"},
-  {id:"maquila", w:"maquila", g:"garment or assembly factory", ex:"Mi prima trabaja en la maquila.", t:"cultura"},
-  {id:"hacer-oficio", w:"hacer oficio", g:"to do housework", ex:"Primero hacé oficio y después salís.", t:"casa"},
-  {id:"echar-tortillas", w:"echar tortillas", g:"to make tortillas by hand", ex:"Mi abuela echaba tortillas a las cinco de la mañana.", t:"casa"},
-  {id:"corinto", w:"corinto", g:"maroon, wine red", ex:"Una camisa corinto.", t:"caliche"},
-  {id:"fiestas-agostinas", w:"fiestas agostinas", g:"San Salvador's August festival", ex:"En las fiestas agostinas hay carrozas y feria.", t:"fiestas", note:"Honors El Divino Salvador del Mundo."},
-  {id:"dia-de-la-cruz", w:"Día de la Cruz", g:"Day of the Cross, May 3", ex:"Adornamos la cruz con frutas para el Día de la Cruz.", t:"fiestas", note:"Welcomes the rains."},
-  {id:"la-calabiuza", w:"La Calabiuza", g:"Tonacatepeque's parade of legend characters", ex:"En La Calabiuza salen la Siguanaba y el Cipitío.", t:"fiestas", note:"Night of November 1."},
-  {id:"bolas-de-fuego", w:"bolas de fuego", g:"fireball festival in Nejapa", ex:"En Nejapa se tiran bolas de fuego el 31 de agosto.", t:"fiestas"},
-  {id:"talciguines", w:"talcigüines", g:"Holy Monday ritual in Texistepeque", ex:"Los talcigüines salen el Lunes Santo.", t:"fiestas"},
-  {id:"cuetes", w:"cuetes", g:"firecrackers", ex:"En Navidad los cipotes queman cuetes.", t:"fiestas", note:"Types: silbadores, estrellitas, volcancitos, morteros."},
-  {id:"cipitio", w:"el Cipitío", g:"pot-bellied boy spirit in a big hat who eats ash", ex:"Dicen que el Cipitío come ceniza de los fogones.", t:"fiestas"},
-  {id:"siguanaba", w:"la Siguanaba", g:"spirit woman who lures unfaithful men", ex:"Si andás de mujeriego, te va a salir la Siguanaba.", t:"fiestas", note:"The Cipitío's mother."},
-  {id:"cadejo", w:"el Cadejo", g:"spirit dog — white protects, black harms", ex:"El cadejo blanco cuida a los que andan de noche.", t:"fiestas"},
-  {id:"carreta-bruja", w:"la Carreta Bruja", g:"phantom oxcart heard at night", ex:"Dicen que se oye la carreta bruja a medianoche.", t:"fiestas", note:"Also la Carreta Chillona."},
-  {id:"justo-juez", w:"el Justo Juez de la Noche", g:"tall faceless figure of the night", ex:"Mi abuelo decía que vio al Justo Juez de la Noche.", t:"fiestas"},
-  {id:"cuentos-de-camino", w:"cuentos de camino", g:"folk tales, ghost stories", ex:"Mi abuela nos contaba cuentos de camino.", t:"fiestas"}
+  {id:"chivo", w:"chivo", g:"cool, great, awesome", ex:"¡Qué chivo tu carro!", exen:"What a cool car you have!", t:"caliche"},
+  {id:"puchica", w:"puchica", g:"mild exclamation — surprise, frustration, awe", ex:"¡Puchica, se me olvidó!", exen:"Darn, I forgot!", t:"caliche", note:"A softened stand-in for a much cruder word. Safe with grandparents."},
+  {id:"cipote", w:"cipote / cipota", g:"kid, child", ex:"Ese cipote no se está quieto.", exen:"That kid won't sit still.", t:"nawat"},
+  {id:"bicho", w:"bicho", g:"a kid — a boy", ex:"Los bichos ya se durmieron.", exen:"The boys have already fallen asleep.", t:"caliche", note:"Masculine. The feminine is bicha. Affectionate from family, dismissive from a stranger. Tone carries it."},
+  {id:"bicha", w:"bicha", g:"a kid — a girl", ex:"Y bien educada la bicha.", exen:"And what a well-behaved girl.", t:"caliche", note:"Feminine of bicho. Affectionate from family, dismissive from a stranger. Tone carries it."},
+  {id:"maje", w:"maje", g:"dude, guy — or idiot", ex:"¿Qué ondas, maje?", exen:"Hey, dude, what's up?", t:"caliche", note:"Between friends it's neutral. Aimed at someone you don't know, it's an insult."},
+  {id:"chero", w:"chero / chera", g:"close friend, buddy", ex:"Voy a salir con mis cheros.", exen:"I'm going out with my buddies.", t:"caliche"},
+  {id:"alero", w:"alero", g:"a close friend, your right hand", ex:"Él es mi alero desde la escuela.", exen:"He's been my right-hand man since school.", t:"caliche"},
+  {id:"cabal", w:"cabal", g:"exactly, right, spot on", ex:"—A las tres. —Cabal.", exen:"—At three. —Exactly.", t:"caliche"},
+  {id:"vaya-pues", w:"vaya pues", g:"alright then — also used to say goodbye", ex:"Vaya pues, nos vemos mañana.", exen:"Alright then, see you tomorrow.", t:"frase", note:"The most Salvadoran phrase there is. Closes conversations, agrees, softens, fills silence."},
+  {id:"pisto", w:"pisto", g:"money", ex:"No ando pisto.", exen:"I don't have any money.", t:"caliche"},
+  {id:"paja", w:"paja", g:"a lie, nonsense, BS", ex:"No hablés paja.", exen:"Don't talk nonsense.", t:"caliche"},
+  {id:"casaka", w:"casaka", g:"a tall tale, a made-up story", ex:"Eso es pura casaka.", exen:"That's pure made-up nonsense.", t:"caliche"},
+  {id:"chambre", w:"chambre", g:"gossip", ex:"Contame el chambre.", exen:"Tell me the gossip.", t:"caliche"},
+  {id:"chambroso", w:"chambroso / chambrosa", g:"a gossip, someone who talks", ex:"No seás chambrosa.", exen:"Don't be such a gossip.", t:"caliche"},
+  {id:"goma", w:"goma", g:"hangover", ex:"Ando de goma.", exen:"I'm hungover.", t:"caliche"},
+  {id:"bolo", w:"bolo / bola", g:"drunk", ex:"Se puso bolo en la fiesta.", exen:"He got drunk at the party.", t:"caliche"},
+  {id:"birria", w:"birria", g:"beer", ex:"Vamos por unas birrias.", exen:"Let's go get some beers.", t:"caliche"},
+  {id:"guaro", w:"guaro", g:"hard liquor, booze", ex:"Trajeron guaro.", exen:"They brought booze.", t:"caliche"},
+  {id:"cachimbo", w:"cachimbo", g:"a ton, a whole lot", ex:"Había un cachimbo de gente.", exen:"There was a whole crowd of people.", t:"caliche"},
+  {id:"chunche", w:"chunche", g:"thing, whatsit, doohickey", ex:"Pasame ese chunche.", exen:"Pass me that thingy.", t:"caliche"},
+  {id:"yuca", w:"yuca", g:"hard, difficult", ex:"Está yuca la tarea.", exen:"The homework is hard.", t:"caliche", note:"Also the actual root vegetable. Context tells you which."},
+  {id:"bayunco", w:"bayunco / bayunca", g:"crude, tacky, acting the fool", ex:"No seás bayunco.", exen:"Don't be such a fool.", t:"caliche"},
+  {id:"cheque", w:"cheque", g:"okay, got it, will do", ex:"Cheque, ahí nos vemos.", exen:"Okay, see you there.", t:"caliche"},
+  {id:"simon", w:"simón", g:"yeah, yep", ex:"—¿Vas a venir? —Simón.", exen:"—Are you coming? —Yep.", t:"caliche"},
+  {id:"va", w:"va", g:"right? okay? — tacked onto the end of a sentence", ex:"Nos vemos el sábado, va.", exen:"See you on Saturday, okay?", t:"frase"},
+  {id:"que-ondas", w:"¿Qué ondas?", g:"what's up?", ex:"¿Qué ondas, chera?", exen:"What's up, friend?", t:"frase"},
+  {id:"guanaco", w:"guanaco / guanaca", g:"a Salvadoran — what Salvadorans call themselves", ex:"Somos guanacos de corazón.", exen:"We're Salvadoran at heart.", t:"caliche", note:"Warm and proud from a Salvadoran. Don't use it about someone until you've heard them use it about themselves."},
+  {id:"chele", w:"chele / chela", g:"light-skinned or fair-haired person", ex:"El chele que vive enfrente.", exen:"The light-skinned guy who lives across the street.", t:"caliche", note:"Descriptive rather than hostile, but it is a comment on appearance."},
+  {id:"la-mara", w:"la mara", g:"the crowd, your group of friends", ex:"Vino toda la mara.", exen:"Our whole crowd came.", t:"caliche", note:"Also the word for gangs. Older Salvadorans use it innocently for 'the gang' of friends; be careful where and how you say it."},
+  {id:"hacer-la-campana", w:"hacer la campaña", g:"to do someone a favor", ex:"Hacéme la campaña y llevame.", exen:"Do me a favor and give me a ride.", t:"frase"},
+  {id:"tener-pena", w:"tener pena", g:"to be embarrassed or shy — not 'to feel pity'", ex:"Me da pena preguntarle.", exen:"I'm embarrassed to ask her.", t:"trampa", note:"In Spain this means grief. In El Salvador it's embarrassment. Big difference."},
+  {id:"ahorita", w:"ahorita", g:"in a bit, shortly — rarely 'right now'", ex:"Ahorita voy.", exen:"I'm going in a little while.", t:"trampa", note:"Textbooks say 'right now.' In practice it can mean anywhere from two minutes to this evening."},
+  {id:"cuilio", w:"cuilio", g:"cop", ex:"Ahí vienen los cuilios.", exen:"Here come the cops.", t:"caliche", note:"Slang and not respectful. Fine among friends, not to an officer's face."},
+  {id:"pupusa", w:"pupusa", g:"the thick stuffed masa tortilla — the national dish", ex:"Vamos a la pupusería.", exen:"Let's go to the pupusa stand.", t:"nawat"},
+  {id:"guisquil", w:"güisquil", g:"chayote squash", ex:"Sopa de güisquil.", exen:"Chayote squash soup.", t:"nawat"},
+  {id:"chumpe", w:"chumpe", g:"turkey", ex:"Para Navidad hacemos chumpe.", exen:"For Christmas we make turkey.", t:"nawat"},
+  {id:"tunco", w:"tunco", g:"pig, pork", ex:"Carne de tunco.", exen:"Pork meat.", t:"nawat"},
+  {id:"jocote", w:"jocote", g:"a small tart plum-like fruit", ex:"Jocotes en miel.", exen:"Jocotes in honey.", t:"nawat"},
+  {id:"guishte", w:"guishte", g:"a shard of broken glass", ex:"Cuidado, hay guishte.", exen:"Careful, there's broken glass.", t:"nawat", note:"No standard Spanish equivalent. Salvadorans are often surprised other countries don't have this word."},
+  {id:"pashte", w:"pashte", g:"loofah gourd, scrubbing sponge", ex:"Bañate con el pashte.", exen:"Bathe with the loofah.", t:"nawat"},
+  {id:"guacal", w:"guacal", g:"a plastic or gourd basin, bowl", ex:"Echale agua con el guacal.", exen:"Pour in water with the bowl.", t:"nawat"},
+  {id:"apaste", w:"apaste", g:"a large clay pot", ex:"El apaste del agua.", exen:"The big clay pot of water.", t:"nawat"},
+  {id:"comal", w:"comal", g:"flat griddle for tortillas", ex:"Poné las tortillas en el comal.", exen:"Put the tortillas on the comal.", t:"nawat"},
+  {id:"tecomate", w:"tecomate", g:"a gourd used as a container", ex:"Tomaba agua del tecomate.", exen:"She drank water from the gourd.", t:"nawat"},
+  {id:"petate", w:"petate", g:"woven reed sleeping mat", ex:"Dormía en un petate.", exen:"I used to sleep on a reed mat.", t:"nawat"},
+  {id:"chipilin", w:"chipilín", g:"an edible leaf, cooked into tamales and soup", ex:"Tamales de chipilín.", exen:"Chipilín tamales.", t:"nawat"},
+  {id:"ayote", w:"ayote", g:"squash, pumpkin", ex:"Dulce de ayote.", exen:"Candied squash.", t:"nawat"},
+  {id:"elote", w:"elote", g:"corn on the cob", ex:"Elote loco.", exen:"Loaded corn on the cob.", t:"nawat"},
+  {id:"milpa", w:"milpa", g:"a cornfield", ex:"Mi abuelo trabajaba la milpa.", exen:"My grandfather worked the milpa.", t:"nawat"},
+  {id:"nixtamal", w:"nixtamal", g:"corn cooked with lime, ready to grind for masa", ex:"Moler el nixtamal.", exen:"Grind the nixtamal.", t:"nawat"},
+  {id:"chapulin", w:"chapulín", g:"grasshopper", ex:"Saltó como chapulín.", exen:"He jumped like a grasshopper.", t:"nawat"},
+  {id:"shuco", w:"shuco", g:"dirty, grimy — also a fermented corn drink (atol shuco)", ex:"Andás bien shuco.", exen:"You're looking really grimy.", t:"nawat"},
+  {id:"chiche", w:"chiche", g:"easy, a breeze", ex:"Está chiche el examen.", exen:"The exam is a breeze.", t:"nawat", note:"Also slang for a breast. Salvadorans use it for 'easy' constantly and the double meaning rarely registers, but now you know."},
+  {id:"chucho", w:"chucho", g:"dog, mutt", ex:"Ese chucho viene todos los días, el sinvergüenza.", exen:"That dog comes every day, the rascal.", t:"caliche", note:"The everyday word for 'dog' in El Salvador."},
+  {id:"vos", w:"vos", g:"you (informal)", ex:"¿Y vos dónde aprendiste eso?", exen:"And where did you learn that?", t:"caliche", note:"Replaces tú almost entirely in El Salvador. The Vos tab covers how the verbs change."},
+  {id:"vos-final", w:"vos (al final)", g:"'man', 'hey' — a friendly tag on the end of a sentence", ex:"¡Ay, no, vos!", exen:"Oh, no, man!", t:"frase", note:"This is what replaces hombre in El Salvador."},
+  {id:"hombre-acc", w:"hombré", g:"man, hey", ex:"¡Hombré, cuánto tiempo!", exen:"Hey, man, long time no see!", t:"caliche", note:"If you do hear hombre here, the stress lands on the last syllable."},
+  {id:"pues", w:"pues / pue'", g:"well, then, so", ex:"Sí pues. Hoy no ando mucho pisto.", exen:"Yes, well. Today I don't have much money.", t:"frase", note:"Sentence filler. Very Salvadoran tacked onto the end."},
+  {id:"puya", w:"¡Puya!", g:"Whoa! Wow!", ex:"¡Puya! Subió el precio, ¿verdá?", exen:"Whoa! The price went up, right?", t:"caliche", note:"Surprise, usually at a price or a piece of news."},
+  {id:"ideay", w:"¡Ideay!", g:"Really? Huh!", ex:"¡Ideay! ¿Y vos qué hacés aquí?", exen:"Huh! And what are you doing here?", t:"caliche", note:"Surprise or gentle challenge."},
+  {id:"chulada", w:"chulada / chulito", g:"a darling, a cutie", ex:"¡Ay, qué chulada de niña!", exen:"Oh, what a cutie of a girl!", t:"caliche", note:"Warm and very common with children."},
+  {id:"mi-amor", w:"mi amor / mi cielo", g:"sweetheart, dear", ex:"Mirá, mi amor. Se pone la masa aquí, así...", exen:"Look, sweetheart. The masa goes here, like this...", t:"frase", note:"Used freely with children, even by strangers."},
+  {id:"mijo", w:"mi'jo / mi'ja", g:"son / dear", ex:"Todo está caro, mi'jo.", exen:"Everything is so expensive, son.", t:"caliche", note:"From mi hijo. Warm, used by older people."},
+  {id:"nina-titulo", w:"niña + name", g:"Miss / Ma'am + name", ex:"¡Buenas, niña Catalina!", exen:"Hello, Miss Catalina!", t:"frase", note:"Respectful address for an older woman, whatever her age. It has nothing to do with being young."},
+  {id:"comadre", w:"comadre", g:"close family friend, godmother", ex:"Ella es mi comadre. Somos cheras de años.", exen:"She's my comadre. We've been close friends for years.", t:"caliche", note:"A bond, not just a friendship."},
+  {id:"cachada", w:"cachada", g:"a bargain, a deal", ex:"Dejámelo en tres, va. Es una cachada para vos.", exen:"Give it to me for three, okay? It's a real bargain for you.", t:"caliche", note:"A price break given as a favor."},
+  {id:"esta-yuca", w:"está yuca", g:"it's hard, it's a long shot", ex:"Está yuca, pero hay fe.", exen:"It's hard, but there's hope.", t:"frase", note:"Literally 'it's cassava.' Very Salvadoran."},
+  {id:"buena-onda", w:"buena onda", g:"good people, kind, cool", ex:"Es usted bien buena onda.", exen:"You're a really good person.", t:"frase", note:"Of a person or a situation."},
+  {id:"babosada", w:"babosada / babosadas", g:"nonsense", ex:"Dejate de babosadas.", exen:"Stop with the nonsense.", t:"caliche", note:"Dejate de babosadas = oh, stop that."},
+  {id:"me-regala", w:"¿Me regala...?", g:"Could I have...? May I get...?", ex:"¿Me regala unas servilletas?", exen:"Could you give me some napkins?", t:"frase", note:"Central American politeness. Nothing is actually free."},
+  {id:"como-amanecio", w:"¿Cómo amaneció?", g:"How are you this morning?", ex:"¡Niña Catalina! ¿Cómo amaneció?", exen:"Good morning, Miss Catalina! How are you this morning?", t:"frase", note:"Literally 'how did you wake up?'"},
+  {id:"dios-se-lo-pague", w:"Dios se lo pague", g:"God bless you / thank you", ex:"Gracias, niña. Dios se lo pague.", exen:"Thank you, dear. God repay you.", t:"frase", note:"Warm thanks, especially for a kindness."},
+  {id:"que-dios-los-acompane", w:"Que Dios los acompañe", g:"God be with you", ex:"Adiós, mi amor. ¡Que Dios los acompañe!", exen:"Goodbye, sweetheart. God be with you!", t:"frase", note:"A blessing said at parting."},
+  {id:"no-te-perdas", w:"no te perdás", g:"don't be a stranger", ex:"Vaya pues, no te perdás.", exen:"Alright then, don't be a stranger.", t:"frase", note:"Standard warm goodbye."},
+  {id:"ruidera", w:"ruidera", g:"a racket, loud noise", ex:"¡Qué ruidera hace esa ruta!", exen:"What a racket that bus route makes!", t:"caliche", note:"From ruido."},
+  {id:"minuta", w:"minuta", g:"shaved ice with syrup", ex:"Yo vendía minutas cuando era cipote.", exen:"I used to sell minutas when I was a kid.", t:"comida", note:"Classic street treat for kids."},
+  {id:"curtido", w:"curtido", g:"pickled cabbage slaw", ex:"Sírvanse curtido y salsa, ahí está.", exen:"Serve yourselves curtido and salsa, it's right there.", t:"comida", note:"Always served with pupusas."},
+  {id:"revuelta", w:"revuelta", g:"a 'mixed' pupusa", ex:"Deme dos revueltas y una de queso con loroco.", exen:"Give me two revueltas and one cheese with loroco.", t:"comida", note:"Beans, cheese and chicharrón together."},
+  {id:"loroco", w:"loroco", g:"an edible flower bud", ex:"Deme dos revueltas y una de queso con loroco.", exen:"Give me two revueltas and one cheese with loroco.", t:"comida", note:"Queso con loroco is a classic filling."},
+  {id:"chicharron", w:"chicharrón", g:"seasoned ground pork", ex:"Una pupusa de chicharrón, porfa.", exen:"A chicharrón pupusa, please.", t:"comida", note:"In pupusas it's ground, not crispy rind."},
+  {id:"masa", w:"masa", g:"corn dough", ex:"Se pone la masa aquí, así...", exen:"The masa goes here, like this...", t:"comida", note:"What pupusas are made from."},
+  {id:"horchata", w:"horchata", g:"morro-seed drink", ex:"Deme una horchata, porfa.", exen:"Give me a horchata, please.", t:"comida", note:"Salvadoran horchata is seed-based, not rice-based."},
+  {id:"chan", w:"chan", g:"chia-seed drink", ex:"Hay horchata, chan y atol de elote.", exen:"There's horchata, chan and atol de elote.", t:"comida", note:"Served cold with lime."},
+  {id:"atol-de-elote", w:"atol de elote", g:"sweet warm corn drink", ex:"Yo quiero atol de elote.", exen:"I want atol de elote.", t:"comida", note:"A children's favorite."},
+  {id:"la-selecta", w:"la Selecta", g:"the national soccer team", ex:"¿Van a ver el partido de la Selecta?", exen:"Are you going to watch the Selecta game?", t:"cultura", note:"Short for La Selección."},
+  {id:"chalate", w:"Chalate", g:"Chalatenango", ex:"Yo soy de Chalate.", exen:"I'm from Chalate.", t:"cultura", note:"Short form of the department's name."},
+  {id:"olocuilta", w:"Olocuilta", g:"town famous for rice pupusas", ex:"Esas son de Olocuilta.", exen:"Those are from Olocuilta.", t:"cultura", note:"On the road to the airport."},
+  {id:"hamaca", w:"hamaca", g:"hammock", ex:"Acostate en la hamaca.", exen:"Lie down in the hammock.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
+  {id:"iglesia", w:"iglesia", g:"church", ex:"La iglesia está en el centro.", exen:"The church is in the center.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
+  {id:"piramide", w:"pirámide", g:"pyramid", ex:"Subimos a la pirámide.", exen:"Let's climb the pyramid.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
+  {id:"volcan", w:"volcán", g:"volcano", ex:"Desde aquí se ve el volcán.", exen:"You can see the volcano from here.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
+  {id:"bandera", w:"bandera", g:"flag", ex:"La bandera es azul y blanca.", exen:"The flag is blue and white.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
+  {id:"tortuga", w:"tortuga", g:"turtle", ex:"Vimos una tortuga en la playa.", exen:"We saw a turtle on the beach.", t:"cultura", note:"Standard Spanish rather than caliche. Listed in glossary due to its cultural reference."},
+  {id:"torogoz", w:"Torogoz", g:"El Salvador's national bird", ex:"El torogoz mueve la cola como un reloj.", exen:"The torogoz swings its tail like a clock.", t:"cultura", note:"Often called pájaro reloj (clock bird), because the back-and-forth movement of its long tail resembles a pendulum clock."},
+  {id:"que-haces", w:"¿qué hacés?", g:"what are you up to?", ex:"¿Qué hacés, vos? ¿Querés salir?", exen:"What are you up to? Do you want to go out?", t:"frase", note:"Vos form of ¿qué haces?"},
+  {id:"que-contas", w:"¿qué contás?", g:"what's new? — lit. what do you tell?", ex:"¿Qué contás? Hace rato no te veía.", exen:"What's new? I haven't seen you in a while.", t:"frase"},
+  {id:"que-paso", w:"¿qué pasó?", g:"hey, what's going on? — a greeting", ex:"¡Qué pasó, chero! ¿Cómo vas?", exen:"Hey, buddy! How's it going?", t:"frase", note:"Works as a hello, not only as \"what happened?\""},
+  {id:"adios", w:"adiós", g:"hi — said in passing", ex:"—¡Adiós, doña Catalina! —¡Adiós, mija!", exen:"—Hi, Doña Catalina! —Hi there, dear!", t:"trampa", note:"On the street it's a greeting when you pass someone without stopping, not a goodbye."},
+  {id:"aqui-nomas", w:"aquí, nomás", g:"just here, getting by — reply to how are you", ex:"—¿Cómo estás? —Aquí, nomás, pasándola.", exen:"—How are you? —Just getting by, you know.", t:"frase"},
+  {id:"que-dios-le-bendiga", w:"que Dios le bendiga", g:"God bless you — a warm send-off", ex:"Andá con cuidado, que Dios te bendiga.", exen:"Go carefully, God bless you.", t:"frase", note:"Often from elders. Also: Dios me lo bendiga."},
+  {id:"ahi-nos-vidrios", w:"ahí nos vidrios", g:"see ya — a pun on nos vemos", ex:"Vaya pues, ahí nos vidrios.", exen:"Alright then, see ya!", t:"frase", note:"Jokey and informal."},
+  {id:"pase-adelante", w:"pase adelante", g:"come on in", ex:"Pase adelante, está en su casa.", exen:"Come on in, make yourself at home.", t:"frase", note:"What a host says at the door."},
+  {id:"fijese-que", w:"fíjese que…", g:"well, you see… — softens bad news", ex:"Fíjese que ya no hay pupusas de loroco.", exen:"Well, you see, there are no more loroco pupusas.", t:"frase", note:"Vos form: fijate que…"},
+  {id:"a-la-gran-puchica", w:"¡a la gran puchica!", g:"oh my goodness! — stronger than puchica", ex:"¡A la gran puchica, qué susto me diste!", exen:"Oh my goodness, you scared me so!", t:"frase"},
+  {id:"ve", w:"¡ve!", g:"look! hey, listen", ex:"Ve, ¿y vos qué hacés aquí?", exen:"Hey, what are you doing here?", t:"caliche", note:"Grabs attention, like ¡mirá!"},
+  {id:"fijate", w:"¡fijate!", g:"imagine that! get this", ex:"Fijate que me saqué la lotería.", exen:"Imagine that! I won the lottery.", t:"frase"},
+  {id:"nel", w:"nel", g:"nope", ex:"—¿Vas a ir? —Nel, ando cansado.", exen:"—Are you going? —Nope, I'm tired.", t:"caliche", note:"Slangy no. Pairs with simón."},
+  {id:"de-a-viaje", w:"¡de a viaje!", g:"absolutely! for sure!", ex:"—¿Vamos a la playa? —¡De a viaje!", exen:"—Shall we go to the beach? —Absolutely!", t:"frase"},
+  {id:"puro", w:"puro / pura", g:"just like, exactly like", ex:"Ese cipote es puro su papá.", exen:"That kid is just like his dad.", t:"caliche"},
+  {id:"a-puro-tubo", w:"a puro tubo", g:"barely, by force, just making it", ex:"Pasé el examen a puro tubo.", exen:"I passed the exam by the skin of my teeth.", t:"frase"},
+  {id:"primero-dios", w:"primero Dios", g:"God willing — lit. God first", ex:"Primero Dios, llego mañana.", exen:"God willing, I'll arrive tomorrow.", t:"frase", note:"Attached to almost any plan."},
+  {id:"me-regala-la-cuenta", w:"¿me regala la cuenta?", g:"can I have the check?", ex:"Niña, ¿me regala la cuenta, por favor?", exen:"Miss, could I have the check, please?", t:"frase"},
+  {id:"regaleme", w:"regáleme…", g:"I'll have… — lit. gift me", ex:"Regáleme tres revueltas y una horchata.", exen:"I'll have three revueltas and a horchata.", t:"frase", note:"Polite even when you're paying."},
+  {id:"a-como-esta", w:"¿a cómo está?", g:"how much is it? — market phrasing", ex:"¿A cómo están los jocotes?", exen:"How much are the jocotes?", t:"frase"},
+  {id:"alla-abajito", w:"allá abajito", g:"just down there", ex:"La tienda queda allá abajito.", exen:"The store is just down there.", t:"frase", note:"Also allá arribita: just up there."},
+  {id:"a-las-quinientas", w:"a las quinientas", g:"very late, at the last minute", ex:"Siempre llega a las quinientas.", exen:"She always arrives at the last minute.", t:"frase"},
+  {id:"ahoritita", w:"ahoritita", g:"right this second", ex:"Lo hago ahoritita, no ahorita.", exen:"I'll do it right this second, not later.", t:"caliche", note:"Extra -it- makes it truly now, unlike ahorita."},
+  {id:"cachimbon", w:"cachimbón / cachimbona", g:"awesome, excellent, really skilled", ex:"Esa banda es cachimbona.", exen:"That band is awesome.", t:"caliche", note:"A little coarse. Fine with friends, not with grandma."},
+  {id:"galan", w:"galán", g:"nice, cool — also handsome", ex:"Qué galán te quedó el dibujo.", exen:"That drawing came out really nice.", t:"caliche"},
+  {id:"chamba", w:"chamba", g:"job, work", ex:"Ando buscando chamba.", exen:"I'm looking for work.", t:"caliche", note:"Verb: chambear, to work."},
+  {id:"jana", w:"jaña / jaño", g:"girlfriend / boyfriend", ex:"Andá a traer a tu jaña.", exen:"Go get your girlfriend.", t:"familia"},
+  {id:"jalar", w:"jalar", g:"to date, go out with someone", ex:"¿Ustedes jalan?", exen:"Do you two go out together?", t:"caliche", note:"Also just \"to pull\"."},
+  {id:"salado", w:"salado / salada", g:"unlucky", ex:"Qué salado sos, otra vez perdiste.", exen:"How unlucky you are, you lost again.", t:"caliche"},
+  {id:"buzo", w:"buzo", g:"sharp, alert, on the ball", ex:"Ponete buzo, que ahí viene el profe.", exen:"Stay alert, the teacher is coming.", t:"caliche"},
+  {id:"clavo", w:"clavo", g:"a problem, a hassle", ex:"¡Qué clavo! Se me fue el bus.", exen:"What a hassle! I missed the bus.", t:"caliche", note:"Hacer un clavo = to make a mess of things."},
+  {id:"hartar", w:"hartar", g:"to eat — a lot", ex:"Vamos a hartar pupusas.", exen:"Let's go eat a ton of pupusas.", t:"caliche", note:"Informal."},
+  {id:"dar-jalon", w:"dar jalón", g:"to give someone a ride", ex:"¿Me das jalón al centro?", exen:"Can you give me a ride downtown?", t:"calle"},
+  {id:"chotear", w:"chotear", g:"to look, watch, check out", ex:"Choteá quién viene.", exen:"Check out who's coming.", t:"caliche"},
+  {id:"capearse", w:"capearse", g:"to skip class", ex:"Se capeó la clase de matemática.", exen:"He skipped math class.", t:"caliche"},
+  {id:"cerote", w:"cerote", g:"jerk — or dude, among friends", ex:"¿Qué ondas, cerote?", exen:"What's up, dude?", t:"caliche", note:"Crude: literally a lump of excrement. Only with close friends."},
+  {id:"encachimbado", w:"encachimbado / encachimbada", g:"furious", ex:"Mi papá está encachimbado.", exen:"My dad is furious.", t:"caliche", note:"Coarse."},
+  {id:"achicopalado", w:"achicopalado / achicopalada", g:"discouraged, down, timid", ex:"No te achicopalés, vos podés.", exen:"Don't be discouraged, you can do it.", t:"caliche", note:"Verb: achicopalarse."},
+  {id:"chulon", w:"chulón / chulona", g:"naked", ex:"El cipote anda chulón por el patio.", exen:"The kid is running around the yard naked.", t:"caliche"},
+  {id:"chuna", w:"chuña", g:"barefoot", ex:"No andés chuña, te vas a cortar.", exen:"Don't go barefoot, you'll cut yourself.", t:"caliche"},
+  {id:"hermano-lejano", w:"hermano lejano", g:"a Salvadoran living abroad — lit. distant sibling", ex:"Los hermanos lejanos vienen para diciembre.", exen:"Our far-away brothers and sisters come in December.", t:"familia", note:"Official and popular term for the diaspora."},
+  {id:"bolarse", w:"bolarse", g:"to get drunk", ex:"Se bolaron en la fiesta.", exen:"They got drunk at the party.", t:"caliche", note:"From bolo, drunk."},
+  {id:"chambrear", w:"chambrear", g:"to gossip", ex:"Dejen de chambrear.", exen:"Stop gossiping.", t:"caliche"},
+  {id:"enchutar", w:"enchutar", g:"to stick in, insert", ex:"Enchutá el cable.", exen:"Plug in the cable.", t:"casa"},
+  {id:"guindar", w:"guindar", g:"to hang (a hammock, clothes)", ex:"Guindá la hamaca en el corredor.", exen:"Hang the hammock on the porch.", t:"casa"},
+  {id:"apiarse", w:"apiarse", g:"to get down, get off", ex:"¡Apiate de ese palo!", exen:"Get down from that tree!", t:"calle", note:"From apearse. On a bus: Me apeo en la esquina."},
+  {id:"ir-a-traer", w:"ir a traer", g:"to go get, fetch", ex:"Andá a traer agua a la pila.", exen:"Go get some water at the pila.", t:"casa"},
+  {id:"andar", w:"andar", g:"to have on you — also to go around", ex:"¿Andás pisto?", exen:"Do you have any money on you?", t:"caliche", note:"\"¿Andás pisto?\" = do you have money on you?"},
+  {id:"un-vergo", w:"un vergo", g:"a lot, a ton", ex:"Había un vergo de gente.", exen:"There were a ton of people.", t:"caliche", note:"Crude. Un montón is the clean version."},
+  {id:"nana", w:"nana", g:"mother — rural", ex:"Mi nana hacía las mejores tortillas.", exen:"My grandma made the best tortillas.", t:"familia", note:"Elsewhere it often means nanny or grandma."},
+  {id:"tata", w:"tata", g:"father — rural, older usage", ex:"Mi tata trabajaba en la milpa.", exen:"My grandpa worked in the milpa.", t:"familia"},
+  {id:"cuache", w:"cuache / cuacha", g:"twin", ex:"Ellas son cuaches.", exen:"They are twins.", t:"nawat", note:"From Nawat coat, twin. Gemelo is the standard word."},
+  {id:"cumiche", w:"cumiche", g:"the youngest child of the family", ex:"Ella es la cumiche de la casa.", exen:"She's the baby of the family.", t:"familia"},
+  {id:"tierno", w:"tierno / tierna", g:"a baby, infant", ex:"Tiene un tierno de tres meses.", exen:"They have a three-month-old baby.", t:"familia"},
+  {id:"chinear", w:"chinear", g:"to carry a child in your arms", ex:"¡Mamá, chinéame!", exen:"Mom, carry me in your arms!", t:"familia"},
+  {id:"pacha", w:"pacha", g:"baby bottle", ex:"Calentá la pacha del tierno.", exen:"Warm up the baby's bottle.", t:"familia", note:"Also a flat flask."},
+  {id:"concuno", w:"concuño / concuña", g:"your spouse's sibling's spouse", ex:"Mi concuña viene el domingo.", exen:"My concuña is coming on Sunday.", t:"familia", note:"A relationship English has no word for."},
+  {id:"companero-de-vida", w:"compañero / compañera de vida", g:"life partner", ex:"Él es mi compañero de vida.", exen:"He is my life partner.", t:"familia", note:"Common for couples who aren't married."},
+  {id:"canilla", w:"canilla", g:"shin — also a skinny leg", ex:"Me pegué en la canilla.", exen:"I bumped my shin.", t:"caliche"},
+  {id:"colocho", w:"colocho / colocha", g:"curly-haired — also a curl", ex:"La niña tiene el pelo colocho.", exen:"The girl has curly hair.", t:"caliche", note:"Common nickname: el Colocho, la Colocha."},
+  {id:"cholco", w:"cholco / cholca", g:"missing teeth, toothless", ex:"Quedó cholco después del pleito.", exen:"He was toothless after the fight.", t:"caliche"},
+  {id:"choco", w:"choco / choca", g:"blind, or blind in one eye", ex:"El chucho está choco.", exen:"The dog is blind.", t:"caliche"},
+  {id:"jiote", w:"jiote", g:"skin rash, scaly patches", ex:"Le salió jiote en el brazo.", exen:"A rash came up on the arm.", t:"nawat", note:"Also the name of a tree with red peeling bark."},
+  {id:"nacido", w:"nacido", g:"a boil, abscess", ex:"Le salió un nacido en la pierna.", exen:"A boil came up on the leg.", t:"caliche"},
+  {id:"sobador", w:"sobador / sobadora", g:"folk healer who treats by massage", ex:"Llevalo donde la sobadora.", exen:"Take him to the sobadora.", t:"cultura"},
+  {id:"pacho", w:"pacho / pacha", g:"flat", ex:"La llanta está pacha.", exen:"The tire is flat.", t:"caliche"},
+  {id:"champa", w:"champa", g:"shack, simple hut", ex:"Vivían en una champa a la orilla del río.", exen:"They lived in a shack by the river.", t:"casa"},
+  {id:"pasaje", w:"pasaje", g:"small residential lane", ex:"Vivo en el pasaje 3 de la colonia.", exen:"I live on Pasaje 3 in the colonia.", t:"calle", note:"Also means fare or ticket."},
+  {id:"poyo", w:"poyo", g:"clay hearth for cooking with wood", ex:"Las tortillas se echan en el comal sobre el poyo.", exen:"The tortillas go on the comal over the poyo.", t:"casa"},
+  {id:"metate", w:"metate", g:"grinding stone for corn", ex:"Mi abuela molía el maíz en la piedra de moler.", exen:"My grandmother ground the corn on the grinding stone.", t:"nawat", note:"Also called piedra de moler."},
+  {id:"porra", w:"porra", g:"large cooking pot", ex:"Hay una porra de frijoles en la cocina.", exen:"There's a big pot of beans in the kitchen.", t:"casa"},
+  {id:"pichel", w:"pichel", g:"pitcher", ex:"Traé el pichel de fresco.", exen:"Bring the pitcher of fresco.", t:"casa"},
+  {id:"pana", w:"pana", g:"basin, mixing bowl", ex:"Echá la masa en la pana.", exen:"Put the dough in the bowl.", t:"casa"},
+  {id:"mecate", w:"mecate", g:"rope", ex:"Amarrá la vaca con el mecate.", exen:"Tie the cow with the rope.", t:"nawat"},
+  {id:"candela", w:"candela", g:"candle — also a flame, fire", ex:"Se fue la luz, prendé una candela.", exen:"The power went out, light a candle.", t:"casa"},
+  {id:"tapesco", w:"tapesco", g:"raised platform of sticks or cane, used as a bed or shelf", ex:"Pusimos el maíz en el tapesco.", exen:"We put the corn on the tapesco.", t:"nawat"},
+  {id:"chamarra", w:"chamarra", g:"blanket", ex:"Traé la chamarra, está haciendo frío.", exen:"Bring the blanket, it's cold.", t:"trampa", note:"In Mexico chamarra is a jacket. In El Salvador it's a blanket — the jacket is a chumpa."},
+  {id:"gavetero", w:"gavetero", g:"chest of drawers", ex:"La ropa está en el gavetero.", exen:"The clothes are in the chest of drawers.", t:"casa", note:"Gaveta = drawer."},
+  {id:"pila", w:"pila", g:"concrete water tank with a built-in washboard", ex:"Fui a lavar la ropa a la pila.", exen:"I went to wash the clothes at the pila.", t:"casa", note:"The heart of the Salvadoran patio. Also means battery."},
+  {id:"corvo", w:"corvo", g:"machete", ex:"Llevá el corvo para chapodar.", exen:"Bring the machete to clear the brush.", t:"casa", note:"A cuma is the curved kind."},
+  {id:"guamil", w:"guamil", g:"fallow land overgrown with brush", ex:"Ese terreno ya es puro guamil.", exen:"That land is all overgrown with brush now.", t:"naturaleza"},
+  {id:"zacate", w:"zacate", g:"grass, pasture", ex:"Las vacas están comiendo zacate.", exen:"The cows are eating grass.", t:"nawat"},
+  {id:"talpetate", w:"talpetate", g:"hard, compacted volcanic soil", ex:"No se puede sembrar, es puro talpetate.", exen:"You can't plant there, it's all hard volcanic soil.", t:"nawat", note:"Tal = earth."},
+  {id:"tetunte", w:"tetunte", g:"a stone, chunk of rock", ex:"Se tropezó con un tetunte.", exen:"They tripped over a stone.", t:"nawat", note:"Tet = stone."},
+  {id:"canton", w:"cantón", g:"rural district within a municipality", ex:"Mis abuelos son de un cantón de Chalatenango.", exen:"My grandparents are from a cantón in Chalatenango.", t:"calle"},
+  {id:"invierno", w:"invierno", g:"the rainy season, about May to October", ex:"En invierno llueve todas las tardes.", exen:"In winter it rains every afternoon.", t:"trampa", note:"Not winter. Salvadoran \"winter\" is the hot, wet season."},
+  {id:"verano", w:"verano", g:"the dry season, about November to April", ex:"En verano se seca la quebrada.", exen:"In summer the stream dries up.", t:"trampa", note:"Not summer in the English sense."},
+  {id:"temporal", w:"temporal", g:"days of steady, nonstop rain", ex:"Con este temporal no se puede salir.", exen:"With this storm you can't go out.", t:"naturaleza"},
+  {id:"chipi-chipi", w:"chipi-chipi", g:"drizzle", ex:"Está cayendo un chipi-chipi.", exen:"A drizzle is falling.", t:"naturaleza"},
+  {id:"maquilishuat", w:"maquilishuat", g:"pink trumpet tree — the national tree", ex:"Ya florecieron los maquilishuat.", exen:"The maquilishuat trees have already flowered.", t:"nawat", note:"Its pink blossoms appear in the dry season."},
+  {id:"conacaste", w:"conacaste", g:"guanacaste or ear tree", ex:"Descansamos bajo el conacaste.", exen:"We rested under the conacaste.", t:"nawat"},
+  {id:"amate", w:"amate", g:"wild fig tree", ex:"El amate de la plaza es centenario.", exen:"The fig tree in the plaza is a century old.", t:"nawat"},
+  {id:"morro", w:"morro", g:"calabash tree — its seeds go in horchata", ex:"La horchata salvadoreña se hace con semilla de morro.", exen:"Horchata is made with morro seeds.", t:"naturaleza"},
+  {id:"chilamate", w:"chilamate", g:"strangler fig", ex:"El chilamate se comió el otro árbol.", exen:"The strangler fig ate the other tree.", t:"nawat"},
+  {id:"madrecacao", w:"madrecacao", g:"gliricidia, a shade tree for coffee", ex:"Los cafetales tienen madrecacao para la sombra.", exen:"Coffee plantations have madrecacao for shade.", t:"naturaleza"},
+  {id:"pito", w:"pito", g:"coral tree — its flowers are eaten", ex:"Hicimos huevos con flor de pito.", exen:"We made eggs with coral tree flowers.", t:"naturaleza"},
+  {id:"palo", w:"palo", g:"tree — in everyday speech", ex:"Se subió al palo de mango.", exen:"They climbed up the mango tree.", t:"naturaleza"},
+  {id:"aguacate", w:"aguacate", g:"avocado", ex:"Echale aguacate a la sopa.", exen:"Add avocado to the soup.", t:"nawat", note:"From Nawat. Used across Mexico and Central America."},
+  {id:"zapote", w:"zapote", g:"sapote fruit", ex:"El zapote está bien maduro.", exen:"The zapote is very ripe.", t:"nawat"},
+  {id:"nance", w:"nance", g:"small yellow fruit, also preserved in guaro", ex:"Compré una bolsa de nances.", exen:"I bought a bag of nances.", t:"naturaleza"},
+  {id:"cuajinicuil", w:"cuajinicuil", g:"ice-cream-bean pod (Inga)", ex:"El cuajinicuil es dulce como algodón.", exen:"The cuajinicuil is sweet like cotton.", t:"nawat", note:"Relatives: paterna and pepeto."},
+  {id:"paterna", w:"paterna", g:"ice-cream-bean pod — sweet white pulp", ex:"Venden paternas en el mercado.", exen:"They sell paternas at the market.", t:"naturaleza"},
+  {id:"guineo", w:"guineo", g:"banana", ex:"Llevate un guineo para el recreo.", exen:"Take a banana for recess.", t:"trampa", note:"Plátano is the plantain you cook."},
+  {id:"mora", w:"mora", g:"black nightshade greens", ex:"Pupusas de mora, por favor.", exen:"Pupusas de mora, please.", t:"trampa", note:"In a pupusa or soup it's the leafy green, not the berry."},
+  {id:"flor-de-izote", w:"flor de izote", g:"yucca flower — the national flower", ex:"Flor de izote con huevo para el desayuno.", exen:"Flor de izote with egg for breakfast.", t:"nawat", note:"Eaten, not just admired."},
+  {id:"pacaya", w:"pacaya", g:"palm flower, often fried in egg batter", ex:"Hoy hay pacaya envuelta.", exen:"There's wrapped pacaya today.", t:"comida"},
+  {id:"pipian", w:"pipián", g:"summer squash", ex:"Sopa de pipián con queso.", exen:"Summer squash soup with cheese.", t:"comida"},
+  {id:"ejote", w:"ejote", g:"green bean", ex:"Compré ejotes para la sopa.", exen:"I bought green beans for the soup.", t:"nawat"},
+  {id:"camote", w:"camote", g:"sweet potato", ex:"Camote en miel para el Día de los Difuntos.", exen:"Sweet potato in honey for the Day of the Dead.", t:"nawat"},
+  {id:"chile", w:"chile", g:"chili pepper", ex:"¿Lo querés con chile?", exen:"Do you want it with chile?", t:"nawat", note:"From Nawat chil."},
+  {id:"tomate", w:"tomate", g:"tomato", ex:"Cortá el tomate para el chirmol.", exen:"Cut the tomato for the chirmol.", t:"nawat", note:"From Nawat tomat."},
+  {id:"achiote", w:"achiote", g:"annatto, a red-orange seasoning", ex:"El achiote le da el color a la gallina.", exen:"The achiote gives the chicken its color.", t:"nawat"},
+  {id:"xiquilite", w:"xiquilite", g:"indigo plant", ex:"El añil se saca del xiquilite.", exen:"Indigo comes from the xiquilite plant.", t:"nawat", note:"Indigo was El Salvador's great colonial export."},
+  {id:"tule", w:"tule", g:"bulrush, reed", ex:"Hacen petates de tule.", exen:"They make petates out of tule.", t:"nawat"},
+  {id:"gallina-india", w:"gallina india", g:"free-range hen", ex:"La sopa de gallina india es la mejor.", exen:"Free-range hen soup is the best.", t:"naturaleza"},
+  {id:"bestia", w:"bestia", g:"horse or mule — rural", ex:"Fueron al cerro en bestia.", exen:"They went up the hill on horseback.", t:"naturaleza"},
+  {id:"tacuacin", w:"tacuacín", g:"opossum", ex:"Un tacuacín se comió los pollitos.", exen:"An opossum ate the chicks.", t:"nawat"},
+  {id:"cusuco", w:"cusuco", g:"armadillo", ex:"Vimos un cusuco en el camino.", exen:"We saw an armadillo on the road.", t:"naturaleza"},
+  {id:"garrobo", w:"garrobo", g:"spiny-tailed iguana", ex:"El garrobo se asolea en la piedra.", exen:"The iguana is sunbathing on the rock.", t:"naturaleza"},
+  {id:"pizote", w:"pizote", g:"coati", ex:"Los pizotes andan en manada.", exen:"Coatis travel in packs.", t:"nawat"},
+  {id:"mapachin", w:"mapachín", g:"raccoon", ex:"Un mapachín se metió a la cocina.", exen:"A raccoon got into the kitchen.", t:"nawat"},
+  {id:"taltuza", w:"taltuza", g:"pocket gopher", ex:"La taltuza se está comiendo la milpa.", exen:"The gopher is eating the milpa.", t:"nawat"},
+  {id:"tepezcuintle", w:"tepezcuintle", g:"paca, a large rodent", ex:"El tepezcuintle sale de noche.", exen:"The paca comes out at night.", t:"nawat"},
+  {id:"cotuza", w:"cotuza", g:"agouti", ex:"Una cotuza cruzó la quebrada.", exen:"An agouti crossed the stream.", t:"naturaleza"},
+  {id:"zope", w:"zope", g:"black vulture", ex:"Los zopes están volando en círculo.", exen:"The vultures are flying in circles.", t:"nawat", note:"Short for zopilote."},
+  {id:"zanate", w:"zanate", g:"great-tailed grackle", ex:"Los zanates hacen una bulla en la tarde.", exen:"The grackles make a racket in the afternoon.", t:"nawat", note:"The male is called clarinero."},
+  {id:"chiltota", w:"chiltota", g:"oriole", ex:"La chiltota hizo su nido colgado.", exen:"The oriole built its nest hanging.", t:"nawat"},
+  {id:"pijuyo", w:"pijuyo", g:"groove-billed ani, a black bird", ex:"Los pijuyos andan entre el monte.", exen:"The anis roam through the scrub.", t:"naturaleza"},
+  {id:"tecolote", w:"tecolote", g:"owl", ex:"Anoche cantó el tecolote.", exen:"The owl sang last night.", t:"nawat"},
+  {id:"zenzontle", w:"zenzontle", g:"mockingbird", ex:"El zenzontle imita a todos los pájaros.", exen:"The mockingbird imitates all the birds.", t:"nawat", note:"From Nawat: four hundred voices."},
+  {id:"chocoyo", w:"chocoyo", g:"small parakeet", ex:"Una bandada de chocoyos pasó gritando.", exen:"A flock of parakeets flew by, screaming.", t:"naturaleza"},
+  {id:"pishishe", w:"pishishe", g:"whistling duck", ex:"Los pishishes llegan a la laguna.", exen:"The whistling ducks arrive at the lagoon.", t:"naturaleza"},
+  {id:"gorrion", w:"gorrión", g:"hummingbird", ex:"Un gorrión llegó a las flores.", exen:"A sparrow came to the flowers.", t:"trampa", note:"Elsewhere a gorrión is a sparrow. In El Salvador it's a hummingbird."},
+  {id:"zompopo", w:"zompopo", g:"leaf-cutter ant", ex:"Con las primeras lluvias salen los zompopos de mayo.", exen:"With the first rains, the leaf-cutter ants come out in May.", t:"nawat"},
+  {id:"chacuatete", w:"chacuatete", g:"praying mantis", ex:"Hay un chacuatete en la ventana.", exen:"There's a praying mantis on the window.", t:"naturaleza"},
+  {id:"masacuata", w:"masacuata", g:"boa constrictor", ex:"Encontraron una masacuata en el gallinero.", exen:"They found a boa in the chicken coop.", t:"nawat"},
+  {id:"zumbadora", w:"zumbadora", g:"racer snake", ex:"La zumbadora corre bien rápido.", exen:"The racer snake runs really fast.", t:"naturaleza"},
+  {id:"tepocate", w:"tepocate", g:"tadpole", ex:"La poza está llena de tepocates.", exen:"The pond is full of tadpoles.", t:"nawat"},
+  {id:"curil", w:"curil", g:"black mangrove clam", ex:"Un cóctel de curiles en el puerto.", exen:"A cocktail of curiles at the port.", t:"comida"},
+  {id:"punche", w:"punche", g:"mangrove crab", ex:"Compramos punches en el estero.", exen:"We bought punches at the estero.", t:"comida"},
+  {id:"chacalin", w:"chacalín", g:"small river shrimp", ex:"Sopa de chacalín.", exen:"Chacalín soup.", t:"comida"},
+  {id:"jute", w:"jute", g:"freshwater snail", ex:"Los jutes se cocinan con limón y chile.", exen:"Jutes are cooked with lime and chile.", t:"comida"},
+  {id:"pepesca", w:"pepesca", g:"small fried river fish", ex:"Yuca con pepesca, por favor.", exen:"Yuca with pepesca, please.", t:"comida"},
+  {id:"guapote", w:"guapote", g:"rainbow bass, a freshwater fish", ex:"Comimos guapote frito en el lago.", exen:"We ate fried guapote at the lake.", t:"comida"},
+  {id:"pupuseria", w:"pupusería", g:"pupusa restaurant or stand", ex:"Vamos a la pupusería de la esquina.", exen:"Let's go to the pupusería on the corner.", t:"comida"},
+  {id:"pupusera", w:"pupusera", g:"woman who makes pupusas", ex:"La pupusera ya está echando.", exen:"The pupusera is already making them.", t:"comida"},
+  {id:"queso-con-loroco", w:"queso con loroco", g:"cheese and loroco pupusa", ex:"Dos de queso con loroco.", exen:"Two cheese with loroco.", t:"comida"},
+  {id:"frijol-con-queso", w:"frijol con queso", g:"bean and cheese pupusa", ex:"Una de frijol con queso para el cipote.", exen:"One bean and cheese, for the kid.", t:"comida"},
+  {id:"pupusa-de-arroz", w:"pupusa de arroz", g:"pupusa made with rice flour", ex:"En Olocuilta comimos pupusas de arroz.", exen:"In Olocuilta we ate rice pupusas.", t:"comida"},
+  {id:"tamales-pisques", w:"tamales pisques", g:"bean-filled tamales", ex:"Mi tía hace tamales pisques los domingos.", exen:"My aunt makes pisques tamales on Sundays.", t:"comida"},
+  {id:"tamal-de-elote", w:"tamal de elote", g:"sweet fresh-corn tamal", ex:"Tamales de elote con crema.", exen:"Fresh-corn tamales with cream.", t:"comida"},
+  {id:"tamales-de-gallina", w:"tamales de gallina", g:"hen tamales in banana leaf", ex:"Para Navidad hay tamales de gallina.", exen:"For Christmas there are hen tamales.", t:"comida", note:"Tamal comes from Nawat."},
+  {id:"ticucos", w:"ticucos", g:"bean tamales, often for Holy Week", ex:"En Semana Santa comemos ticucos.", exen:"At Holy Week we eat ticucos.", t:"comida"},
+  {id:"riguas", w:"riguas", g:"fresh-corn cakes cooked in husk or leaf", ex:"Las riguas salen calientitas del comal.", exen:"The riguas come out of the comal piping hot.", t:"comida"},
+  {id:"panes-con-pollo", w:"panes con pollo", g:"chicken sandwiches in sauce", ex:"En Navidad no pueden faltar los panes con pollo.", exen:"At Christmas, panes con pollo can't be missing.", t:"comida", note:"Also called panes rellenos."},
+  {id:"sopa-de-gallina-india", w:"sopa de gallina india", g:"free-range hen soup", ex:"Para la goma, una sopa de gallina india.", exen:"For the hangover, a free-range hen soup.", t:"comida"},
+  {id:"sopa-de-pata", w:"sopa de pata", g:"cow-foot and tripe soup", ex:"Los domingos hay sopa de pata.", exen:"On Sundays there's sopa de pata.", t:"comida"},
+  {id:"mariscada", w:"mariscada", g:"creamy seafood soup", ex:"Pedimos una mariscada en La Libertad.", exen:"We ordered a mariscada in La Libertad.", t:"comida"},
+  {id:"gallo-en-chicha", w:"gallo en chicha", g:"rooster stewed in fermented corn wine", ex:"Para la boda hicieron gallo en chicha.", exen:"For the wedding they made gallo en chicha.", t:"comida"},
+  {id:"casamiento", w:"casamiento", g:"rice and beans fried together", ex:"Desayuno de casamiento con huevo.", exen:"Breakfast of casamiento with egg.", t:"comida", note:"Lit. \"marriage\"."},
+  {id:"frijoles-molidos", w:"frijoles molidos", g:"refried beans", ex:"Frijoles molidos con crema y queso duro.", exen:"Refried beans with cream and aged cheese.", t:"comida", note:"Also frijoles volteados."},
+  {id:"platanos-fritos", w:"plátanos fritos con crema", g:"fried plantains with cream", ex:"De postre, plátanos fritos con crema.", exen:"For dessert, fried plantains with cream.", t:"comida"},
+  {id:"yuca-frita", w:"yuca frita", g:"fried cassava", ex:"Yuca frita con chicharrón y curtido.", exen:"Fried yuca with chicharrón and curtido.", t:"comida", note:"Yuca salcochada = boiled."},
+  {id:"chirmol", w:"chirmol", g:"fresh tomato-onion salsa", ex:"La carne asada lleva chirmol.", exen:"The grilled meat comes with chirmol.", t:"comida"},
+  {id:"crema", w:"crema", g:"Salvadoran sour cream", ex:"Échele crema a los frijoles.", exen:"Add some cream to the beans.", t:"comida"},
+  {id:"queso-duro", w:"queso duro", g:"hard, salty cheese", ex:"Un poquito de queso duro rallado.", exen:"A little grated hard cheese.", t:"comida"},
+  {id:"quesillo", w:"quesillo", g:"soft melting cheese", ex:"Pupusas de quesillo.", exen:"Quesillo pupusas.", t:"comida"},
+  {id:"elote-loco", w:"elote loco", g:"corn on the cob with mayo, ketchup, mustard and cheese", ex:"En las fiestas compramos elotes locos.", exen:"At the fiestas we buy elotes locos.", t:"comida"},
+  {id:"alguashte", w:"alguashte", g:"ground roasted squash seed", ex:"Mango verde con limón, sal y alguashte.", exen:"Green mango with lime, salt and alguashte.", t:"nawat"},
+  {id:"quesadilla", w:"quesadilla", g:"sweet cheese pound cake", ex:"Café con quesadilla en la tarde.", exen:"Coffee with quesadilla in the afternoon.", t:"trampa", note:"Not the Mexican cheese tortilla."},
+  {id:"semita", w:"semita", g:"pastry filled with jam or panela", ex:"Una semita alta, por favor.", exen:"One tall semita, please.", t:"comida"},
+  {id:"marquesote", w:"marquesote", g:"sponge cake", ex:"El marquesote es para la fiesta.", exen:"The marquesote is for the party.", t:"comida"},
+  {id:"salpores", w:"salpores", g:"crumbly rice or corn cookies", ex:"Salpores de arroz con café.", exen:"Rice salpores with coffee.", t:"comida"},
+  {id:"nuegados", w:"nuégados", g:"yuca or corn fritters in panela syrup", ex:"Nuégados con chilate en Semana Santa.", exen:"Nuégados with chilate at Holy Week.", t:"comida"},
+  {id:"empanadas-de-platano", w:"empanadas de plátano", g:"plantain turnovers filled with custard or beans", ex:"Empanadas de plátano con leche poleada.", exen:"Plantain empanadas with leche poleada.", t:"comida"},
+  {id:"leche-poleada", w:"leche poleada", g:"vanilla-cinnamon custard", ex:"La leche poleada va dentro de la empanada.", exen:"Leche poleada goes inside the empanada.", t:"comida"},
+  {id:"jocotes-en-miel", w:"jocotes en miel", g:"hog plums in syrup", ex:"Para el Día de los Difuntos hay jocotes en miel.", exen:"For the Day of the Dead there are jocotes in honey.", t:"comida", note:"Ayote en miel is the squash version."},
+  {id:"sorbete", w:"sorbete", g:"ice cream", ex:"Ahí viene el sorbetero.", exen:"Here comes the ice cream man.", t:"trampa", note:"Elsewhere sorbete can mean sorbet or a straw."},
+  {id:"charamusca", w:"charamusca", g:"frozen juice in a little plastic bag", ex:"Una charamusca de fresa.", exen:"A strawberry frozen juice bag.", t:"comida"},
+  {id:"fresco", w:"fresco", g:"fruit drink", ex:"Un fresco de tamarindo bien helado.", exen:"A fresh tamarind drink, really cold.", t:"comida"},
+  {id:"ensalada", w:"ensalada", g:"fruit punch with chopped fruit", ex:"Para tomar, una ensalada.", exen:"To drink, a fruit punch.", t:"trampa", note:"A drink as well as a salad."},
+  {id:"cebada", w:"cebada", g:"pink barley drink", ex:"La cebada es rosadita y dulce.", exen:"Barley drink is pink and sweet.", t:"comida"},
+  {id:"atol-shuco", w:"atol shuco", g:"fermented black-corn drink", ex:"Un atol shuco con frijoles y alguashte.", exen:"An atol shuco with beans and alguashte.", t:"comida", note:"Shuco is from Nawat."},
+  {id:"chilate", w:"chilate", g:"unsweetened spiced corn drink", ex:"El chilate se toma con nuégados.", exen:"Chilate is drunk with nuégados.", t:"nawat"},
+  {id:"cafe-de-palo", w:"café de palo", g:"coffee brewed in a cloth filter", ex:"Mi abuela solo toma café de palo.", exen:"My grandmother only drinks café de palo.", t:"comida"},
+  {id:"chocolate", w:"chocolate", g:"chocolate, hot chocolate", ex:"Un chocolate con pan dulce.", exen:"A chocolate with sweet bread.", t:"nawat", note:"From Nawat, like cacao."},
+  {id:"kolashampan", w:"kolashampan", g:"Salvadoran orange-colored soda", ex:"Pupusas con Kolashampan.", exen:"Pupusas with Kolashampan.", t:"comida"},
+  {id:"boquitas", w:"boquitas", g:"bar snacks served with drinks", ex:"Pedimos unas boquitas con las cervezas.", exen:"We ordered some boquitas with the beers.", t:"comida"},
+  {id:"la-napa", w:"la ñapa", g:"a little extra thrown in", ex:"Me dio dos mangos de ñapa.", exen:"He gave me two mangos as a little extra.", t:"calle"},
+  {id:"menudo", w:"menudo", g:"coins, small change", ex:"No tengo menudo, solo billete.", exen:"I don't have change, only bills.", t:"calle"},
+  {id:"cora", w:"cora", g:"25 cents, a quarter", ex:"Me falta una cora para el bus.", exen:"I'm missing a quarter for the bus.", t:"calle"},
+  {id:"len", w:"len", g:"one cent", ex:"No tengo ni un len.", exen:"I don't have even a cent.", t:"calle"},
+  {id:"encomienda", w:"encomienda", g:"parcel sent between the US and El Salvador", ex:"Mandé una encomienda para mi mamá.", exen:"I sent a package to my mom.", t:"cultura", note:"The courier is the encomendero."},
+  {id:"ropa-de-paca", w:"ropa de paca", g:"used clothing sold from imported bales", ex:"Encontré una chumpa en la ropa de paca.", exen:"I found a jacket in the used clothing.", t:"calle", note:"Also ropa americana."},
+  {id:"mudada", w:"mudada", g:"a change of clothes, an outfit", ex:"Llevá una mudada para la playa.", exen:"Bring a change of clothes for the beach.", t:"casa"},
+  {id:"chumpa", w:"chumpa", g:"jacket", ex:"Ponete la chumpa, está haciendo frío.", exen:"Put on your jacket, it's cold.", t:"casa"},
+  {id:"calzoneta", w:"calzoneta", g:"swim trunks, swimsuit", ex:"No se te olvide la calzoneta.", exen:"Don't forget your swimsuit.", t:"casa"},
+  {id:"blumer", w:"blúmer", g:"women's underwear", ex:"Compré blúmers en el mercado.", exen:"I bought underwear at the market.", t:"casa", note:"From English bloomers."},
+  {id:"caites", w:"caites", g:"leather sandals", ex:"Andaba con sus caites viejos.", exen:"Walking around in old leather sandals.", t:"nawat"},
+  {id:"yinas", w:"yinas", g:"flip-flops", ex:"Ponete las yinas para ir a la playa.", exen:"Put on your flip-flops to go to the beach.", t:"casa"},
+  {id:"cincho", w:"cincho", g:"belt", ex:"Se me olvidó el cincho.", exen:"I forgot my belt.", t:"casa"},
+  {id:"gabacha", w:"gabacha", g:"apron, smock", ex:"La pupusera se puso la gabacha.", exen:"The pupusera put on her apron.", t:"casa"},
+  {id:"dui", w:"DUI", g:"Salvadoran national ID card", ex:"Enseñe su DUI, por favor.", exen:"Show your DUI, please.", t:"calle", note:"Documento Único de Identidad."},
+  {id:"micro", w:"micro", g:"minibus", ex:"Me fui en micro hasta el centro.", exen:"I went to the center by minibus.", t:"calle"},
+  {id:"la-ruta", w:"la ruta", g:"bus route — also the bus itself", ex:"¿Qué ruta me deja en Soya?", exen:"Which route drops me off at Soya?", t:"calle"},
+  {id:"busero", w:"busero", g:"bus driver", ex:"El busero no quiso parar.", exen:"The bus driver wouldn't stop.", t:"calle"},
+  {id:"cobrador", w:"cobrador", g:"fare collector on a bus", ex:"El cobrador grita las paradas.", exen:"The fare collector calls out the stops.", t:"calle"},
+  {id:"redondel", w:"redondel", g:"traffic circle, roundabout", ex:"Doblá en el redondel.", exen:"Turn at the roundabout.", t:"calle"},
+  {id:"tumulo", w:"túmulo", g:"speed bump", ex:"Despacio, que viene un túmulo.", exen:"Slow down, there's a speed bump coming.", t:"calle"},
+  {id:"cerquita", w:"cerquita", g:"very close — supposedly", ex:"Es cerquita, como a diez cuadras.", exen:"It's very close, like ten blocks away.", t:"calle", note:"Don't take it too literally."},
+  {id:"rancho-de-playa", w:"rancho de playa", g:"beach house", ex:"Alquilamos un rancho de playa.", exen:"We rented a beach house.", t:"calle"},
+  {id:"turicentro", w:"turicentro", g:"public recreation park with pools", ex:"El domingo vamos al turicentro.", exen:"On Sunday we go to the turicentro.", t:"calle"},
+  {id:"ruta-de-las-flores", w:"Ruta de las Flores", g:"scenic route of mountain towns in the west", ex:"Fuimos a Juayúa por la Ruta de las Flores.", exen:"We went to Juayúa by the Ruta de las Flores.", t:"cultura"},
+  {id:"la-seno", w:"la seño", g:"teacher — what kids call her", ex:"La seño nos dejó tarea.", exen:"The teacher gave us homework.", t:"caliche", note:"Short for señorita. Also a polite \"ma'am\"."},
+  {id:"bolson", w:"bolsón", g:"backpack, school bag", ex:"Echá los cuadernos en el bolsón.", exen:"Put the notebooks in the backpack.", t:"caliche"},
+  {id:"lapicero", w:"lapicero", g:"pen", ex:"¿Me prestás un lapicero?", exen:"Can you lend me a pen?", t:"caliche", note:"In Mexico: pluma."},
+  {id:"plumon", w:"plumón", g:"marker", ex:"Escribí con plumón en la cartulina.", exen:"I wrote with a marker on the poster board.", t:"caliche"},
+  {id:"papelografo", w:"papelógrafo", g:"flip-chart paper", ex:"Hicimos la exposición en papelógrafo.", exen:"We did the presentation on flip-chart paper.", t:"cultura"},
+  {id:"aplazar", w:"aplazar", g:"to fail a class", ex:"Me aplazaron en matemática.", exen:"I failed math.", t:"caliche"},
+  {id:"maquila", w:"maquila", g:"garment or assembly factory", ex:"Mi prima trabaja en la maquila.", exen:"My cousin works at the maquila.", t:"cultura"},
+  {id:"hacer-oficio", w:"hacer oficio", g:"to do housework", ex:"Primero hacé oficio y después salís.", exen:"First do the housework, then go out.", t:"casa"},
+  {id:"echar-tortillas", w:"echar tortillas", g:"to make tortillas by hand", ex:"Mi abuela echaba tortillas a las cinco de la mañana.", exen:"My grandmother made tortillas by hand at five in the morning.", t:"casa"},
+  {id:"corinto", w:"corinto", g:"maroon, wine red", ex:"Una camisa corinto.", exen:"A maroon shirt.", t:"caliche"},
+  {id:"fiestas-agostinas", w:"fiestas agostinas", g:"San Salvador's August festival", ex:"En las fiestas agostinas hay carrozas y feria.", exen:"At the fiestas agostinas there are floats and a fair.", t:"fiestas", note:"Honors El Divino Salvador del Mundo."},
+  {id:"dia-de-la-cruz", w:"Día de la Cruz", g:"Day of the Cross, May 3", ex:"Adornamos la cruz con frutas para el Día de la Cruz.", exen:"We decorate the cross with fruit for the Day of the Cross.", t:"fiestas", note:"Welcomes the rains."},
+  {id:"la-calabiuza", w:"La Calabiuza", g:"Tonacatepeque's parade of legend characters", ex:"En La Calabiuza salen la Siguanaba y el Cipitío.", exen:"In La Calabiuza, the Siguanaba and the Cipitío come out.", t:"fiestas", note:"Night of November 1."},
+  {id:"bolas-de-fuego", w:"bolas de fuego", g:"fireball festival in Nejapa", ex:"En Nejapa se tiran bolas de fuego el 31 de agosto.", exen:"In Nejapa they throw fireballs on August 31st.", t:"fiestas"},
+  {id:"talciguines", w:"talcigüines", g:"Holy Monday ritual in Texistepeque", ex:"Los talcigüines salen el Lunes Santo.", exen:"The talcigüines come out on Holy Monday.", t:"fiestas"},
+  {id:"cuetes", w:"cuetes", g:"firecrackers", ex:"En Navidad los cipotes queman cuetes.", exen:"At Christmas the kids set off firecrackers.", t:"fiestas", note:"Types: silbadores, estrellitas, volcancitos, morteros."},
+  {id:"cipitio", w:"el Cipitío", g:"pot-bellied boy spirit in a big hat who eats ash", ex:"Dicen que el Cipitío come ceniza de los fogones.", exen:"They say the Cipitío eats ash from the cooking fires.", t:"fiestas"},
+  {id:"siguanaba", w:"la Siguanaba", g:"spirit woman who lures unfaithful men", ex:"Si andás de mujeriego, te va a salir la Siguanaba.", exen:"If you go around chasing women, the Siguanaba will show up.", t:"fiestas", note:"The Cipitío's mother."},
+  {id:"cadejo", w:"el Cadejo", g:"spirit dog — white protects, black harms", ex:"El cadejo blanco cuida a los que andan de noche.", exen:"The white cadejo watches over those who walk at night.", t:"fiestas"},
+  {id:"carreta-bruja", w:"la Carreta Bruja", g:"phantom oxcart heard at night", ex:"Dicen que se oye la carreta bruja a medianoche.", exen:"They say you can hear the carreta bruja at midnight.", t:"fiestas", note:"Also la Carreta Chillona."},
+  {id:"justo-juez", w:"el Justo Juez de la Noche", g:"tall faceless figure of the night", ex:"Mi abuelo decía que vio al Justo Juez de la Noche.", exen:"My grandfather said he saw the Justo Juez de la Noche.", t:"fiestas"},
+  {id:"cuentos-de-camino", w:"cuentos de camino", g:"folk tales, ghost stories", ex:"Mi abuela nos contaba cuentos de camino.", exen:"My grandmother told us cuentos de camino.", t:"fiestas"}
 ];
 const VERBS = [
   {id:"hablar", inf:"hablar", vos:"hablás", tu:"hablas", imp:"hablá"},
@@ -716,7 +721,7 @@ function icon(name,size,cls){
 
 /* "English/Spanish" - the English is what learners read first. "Nawat root"
    is kept exactly as it is: CLAUDE.md asks for those badges unchanged. */
-const TAGS={caliche:"Caliche",nawat:"Nawat root",frase:"Phrase/Frase",trampa:"False friend/Falso amigo",
+const TAGS={caliche:"Caliche",nawat:"Nawat root",frase:"Phrase/Frase",trampa:"Means something else/Significa otra cosa",
   comida:"Food/Comida",cultura:"Culture/Cultura",familia:"Family/Familia",casa:"House/Casa",
   naturaleza:"Nature/Naturaleza",calle:"Street/En la calle",fiestas:"Festivals/Fiestas y leyendas"};
 const YES=["¡Cabal!","¡Chivo!","¡Simón!","¡Así es!","¡Vaya pues!","¡Qué chivo!"];
@@ -823,12 +828,12 @@ function renderPalabras(){
     if(filter==="guardadas"&&!saved.has(x.id)) return false;
     if(filter!=="todas"&&filter!=="guardadas"&&x.t!==filter) return false;
     if(!q) return true;
-    return (x.w+" "+x.g+" "+(x.ex||"")).toLowerCase().indexOf(q)>-1;
+    return (x.w+" "+x.g+" "+(x.ex||"")+" "+(x.exen||"")).toLowerCase().indexOf(q)>-1;
   });
   const chips=[["todas","All/Todas"],["caliche","Caliche"],["comida","Food/Comida"],
     ["nawat","Nawat roots"],["frase","Phrases/Frases"],["familia","Family/Familia"],["casa","House/Casa"],
     ["naturaleza","Nature/Naturaleza"],["calle","Street/En la calle"],["fiestas","Festivals/Fiestas y leyendas"],["cultura","Culture/Cultura"],
-    ["trampa","False friends/Falsos amigos"],["guardadas","Saved/Guardadas ("+saved.size+")"]];
+    ["trampa","Means something else/Significa otra cosa aquí"],["guardadas","Saved/Guardadas ("+saved.size+")"]];
 
   sceneItem(null);
   view.innerHTML=
@@ -836,6 +841,9 @@ function renderPalabras(){
     '<div class="chips">'+chips.map(function(c){
       return '<button class="chip" data-f="'+c[0]+'" aria-pressed="'+(filter===c[0])+'">'+
         c[1]+'</button>'}).join("")+'</div>'+
+    (filter==="trampa"?'<p style="padding:2px 2px 10px;font-size:15px;line-height:1.4">'+
+      bi("These words look familiar, but in El Salvador they mean something else. Read the note on each one.",
+         "Estas palabras parecen conocidas, pero en El Salvador significan otra cosa. Lee la nota de cada una.")+'</p>':'')+
     '<p class="note" style="padding:6px 2px 12px">'+list.length+' of '+WORDS.length+
       ' entries. Tap the star to save one.</p>'+
     (list.length?list.map(function(x,i){
@@ -844,6 +852,7 @@ function renderPalabras(){
           '<div class="word">'+esc(x.w)+'</div>'+
           '<div class="gloss">'+esc(x.g)+'</div>'+
           (x.ex?'<div class="ex">'+esc(x.ex)+'</div>':'')+
+          (x.exen?'<div class="exen">'+esc(x.exen)+'</div>':'')+
           (x.note?'<div class="flag">'+esc(x.note)+'</div>':'')+
           '<span class="tag t-'+x.t+'">'+TAGS[x.t]+'</span>'+
         '</div>'+
@@ -925,8 +934,7 @@ function renderVos(){
 }
 
 /* ============ PRÁCTICA ============ */
-const QUIZ_WORDS = 12;   /* how many glossary questions in a round */
-const QUIZ_VERBS = 6;    /* how many vos-form questions */
+const QUIZ_WORDS = 20;   /* how many glossary questions in a round */
 
 /* Four choices, every one of them different and none of them blank.
    Two guards live here. A verb like estar or ir has the same vos and tú
@@ -949,19 +957,13 @@ function buildQuiz(){
       opts:options(x.g, WORDS.filter(function(y){return y.id!==x.id})
         .map(function(y){return y.g}), 4)});
   });
-  /* Command-only verbs have no present tense, so they sit this one out. */
-  shuffle(VERBS.filter(function(v){return v.vos})).slice(0,QUIZ_VERBS).forEach(function(v){
-    const wrong=[v.tu].concat(VERBS.filter(function(y){return y.id!==v.id})
-      .map(function(y){return y.vos}));
-    pool.push({prompt:"The vos form of…",q:v.inf,correct:v.vos,opts:options(v.vos,wrong,4)});
-  });
   return {items:shuffle(pool),i:0,score:0,answered:null,streak:0,best:0};
 }
 
 function renderStart(){
   view.innerHTML=
     '<div class="card rise" style="background:var(--blue);color:var(--paper)">'+
-      '<div class="prompt" style="color:rgba(255,255,255,.7)">'+(QUIZ_WORDS+QUIZ_VERBS)+' questions — words and vos forms</div>'+
+      '<div class="prompt" style="color:rgba(255,255,255,.7)">'+QUIZ_WORDS+' questions — words and phrases from the glossary</div>'+
       '<div class="hero" id="cycle" style="color:var(--marigold)">'+icon("pupusa",40,"bob")+
         '<span id="cw">chivo</span></div></div>'+
     '<button class="btn go wide" id="start">Start/Empezar</button>'+
@@ -1161,10 +1163,8 @@ function renderMercado(){
   if(!mercado){
     sceneItem(null);
     view.innerHTML =
-      '<div class="askrow">'+
-        '<span class="line">'+bi("Hi there! What's up? What can I get you?","¡Buenas! ¿Qué ondas? ¿Le sirvo algo?")+'</span></div>'+
-      '<p class="note" style="padding:2px 2px 12px">Walk through the market and name what you see. '+
-        pool.length+' things, drawn from your glossary.</p>'+
+      '<p style="font-size:20px;line-height:1.3;font-weight:700;padding:6px 2px 14px">'+
+        bi("Walk through the market and name what you see.","Caminá por el mercado y nombrá lo que ves.")+'</p>'+
       gapNote+
       '<button class="btn go wide" id="mstart">'+icon("pupusa",20)+'Go to the market/Ir al mercado</button>';
     document.getElementById("mstart").onclick=function(){
@@ -1228,7 +1228,7 @@ function renderMercado(){
     '<div class="hud"><div class="bar"><i style="width:'+(done/mercado.items.length*100)+'%"></i></div>'+
       '<span class="streak '+(mercado.streak?"":"cold")+'">'+icon("estrella",13)+(mercado.streak||0)+'</span></div>'+
     '<div class="askrow">'+
-      '<span class="line">'+bi("So, what's this then?","¿Y esto qué es, pues?")+'</span></div>'+
+      '<span class="line">'+bi("What do you see?","¿Qué ves?")+'</span></div>'+
     '<div class="opts">'+mercado.opts.map(function(o,n){
       let c="opt";
       if(mercado.answered!==null){
@@ -1284,37 +1284,143 @@ function renderMercado(){
    houses, the volcán, the pirámide - is drawn on top of the blocks by
    SCENERY below, so a shape you build here gets a picture over it. */
 const T=24, VW=480, VH=288;          /* one square, and the window onto the level */
-const LEVEL=[
-  "..........................................................................................................................X.......",
-  "..........................................................................................................................X.......",
-  ".........................................................o................................................................X.......",
-  "........................................o...............o.o...............................................................X.......",
-  "........................................#...................o..............................................oto............X.......",
-  ".......................................o#..................................................................===............#.......",
-  "................oo.....ooo.............###....................o..............oo...oo..................ooo...............o###o.....",
-  ".......................===............o###o...........................................................===...............#####.....",
-  "................##....................#####................####..............##...##...........................o......o#######....",
-  "..S...o.o.......##..oo...............#######.........o...C.####..............##...##......d...............d...........#########...",
-  "###########..##################..################..####################..########################..##############..###############",
-  "###########..##################..################..####################..########################..##############..###############"
-];
-const LROWS=LEVEL.length, LCOLS=LEVEL[0].length, LW=LCOLS*T;
 
-/* Pictures laid over the blocks. x and y are in squares, h is the height
-   in squares; the width follows the drawing's own shape. back:1 means it
-   sits far off in the distance and drifts by more slowly. */
-/* Pictures laid over the blocks. x and y are in squares, h is the height in
-   squares; the width follows the drawing's own shape. back:1 puts a drawing
-   in the far distance, where it drifts by at half speed. The landscape
-   picture behind everything is drawn in gameDraw, not here. */
-const SCENERY=[
-  {art:"casa_adobe",   x:17,  y:10, h:2.7},
-  {art:"volcan",       x:40,  y:10, h:6.7},
-  {art:"catedral", x:61,  y:10, h:4.5},
-  {art:"casa_gallina", x:78,  y:10, h:2.7},
-  {art:"casa_hamaca",  x:83,  y:10, h:2.7},
-  {art:"piramide",     x:122, y:10, h:6.2}
+/* Each level is a picture like the one above, plus its own pictures on top
+   (scenery) and its moving platforms (movers). A mover slides between its
+   start square and that square moved by dx and dy, and back again, taking
+   `period` frames for the round trip. A `k` is a tortuga - a slow chucho. */
+const LEVELS=[
+  {en:"The Road", es:"El Camino", rows:[
+    "..........................................................................................................................X.......",
+    "..........................................................................................................................X.......",
+    ".........................................................o................................................................X.......",
+    "........................................o...............o.o...............................................................X.......",
+    "........................................#...................o..............................................oto............X.......",
+    ".......................................o#..................................................................===............#.......",
+    "................oo.....ooo.............###....................o..............oo...oo..................ooo...............o###o.....",
+    ".......................===............o###o...........................................................===...............#####.....",
+    "................##....................#####................####..............##...##...........................o......o#######....",
+    "..S...o.o.......##..oo...............#######.........o...C.####..............##...##......d...............d...........#########...",
+    "###########..##################..################..####################..########################..##############..###############",
+    "###########..##################..################..####################..########################..##############..###############"
+  ], scenery:[
+    {art:"casa_adobe", x:17, y:10, h:2.7},
+    {art:"volcan", x:40, y:10, h:6.7},
+    {art:"catedral", x:61, y:10, h:4.5},
+    {art:"casa_gallina", x:78, y:10, h:2.7},
+    {art:"casa_hamaca", x:83, y:10, h:2.7},
+    {art:"piramide", x:122, y:10, h:6.2}
+  ], movers:[]},
+  {en:"The Beach", es:"La playa", rows:[
+    "................................................................................................XX..",
+    "................................................................................................XX..",
+    "................................................................................................XX..",
+    "................................................................................................XX..",
+    "..............................................................oooo...........................o..XX..",
+    "..........................................................o..======......................e..===.XX..",
+    ".....................................................................................o..===.....XX..",
+    "..........................ooo................................o...................e..===.........XX..",
+    ".........................##.................o.....o.....o....o.........####..o..===.............XX..",
+    "..S.ooo.....ooo..........##...d........................d...............####.===.................XX..",
+    "##################.......################.......###########..#####################################..",
+    "##################.......################.......###########..#####################################.."
+  ], scenery:[
+    {art:"casa_hamaca", x:26, y:10, h:2.7},
+    {art:"iglesia", x:72, y:10, h:4},
+    {art:"piramide", x:97, y:10, h:6.2}
+  ], movers:[
+    {c:17, r:8, w:3, dx:6, dy:0, period:420},
+    {c:40, r:9, w:3, dx:6, dy:0, period:420},
+    {c:59, r:9, w:2, dx:0, dy:-3, period:230}
+  ]},
+  {en:"The Volcano", es:"El volcán", rows:[
+    ".....................................................................................................XX..",
+    "..........................................................o..o.......................................XX..",
+    "............................................................d........................................XX..",
+    ".........................................................======...........o..........................XX..",
+    ".........................................................................o.o.........................XX..",
+    ".....................o...o...o...o...........o...........o..........................................oXX..",
+    "................................===..........#...................................................e..=XX..",
+    "............................===............#####.....o...o...............................o...o..=o=..XX..",
+    ".....o#..o..o...........===..............#########.......................................o..===......XX..",
+    "..S..##.............===...............###############.............o...o...C.............===..........XX..",
+    "##############..#################################################################.......#################",
+    "##############..#################################################################.......#################"
+  ], scenery:[
+    {art:"casa_adobe", x:6, y:10, h:2.7},
+    {art:"volcan", x:45, y:10, h:6.7},
+    {art:"piramide", x:102, y:10, h:6.2}
+  ], movers:[
+    {c:55, r:9, w:2, dx:0, dy:-6, period:220},
+    {c:80, r:9, w:3, dx:5, dy:0, period:420}
+  ]},
+  {en:"The Summit", es:"La cumbre", rows:[
+    ".......................................................................................................................XX....",
+    ".......................................................................................................................XX....",
+    ".......................................................................................................................XX....",
+    "..........................................o.o.o..........................................o.d.e.........................XX....",
+    "..............................o...........=====.........................................=======........................XX....",
+    "...................................................................................e...................................XX....",
+    "...............................................................................o..====.......................o...o...o.XX....",
+    ".................................o.........................................e..====..................................===XX....",
+    "....o...o...................o..............................####........o..====.....................##...........===....XX....",
+    "..S.........d.............d............C...................####...d...====.........................##.......===........XX....",
+    "################..############..###############.......################.........................###########################...",
+    "################..############..###############.......################.........................###########################..."
+  ], scenery:[
+    {art:"catedral", x:60, y:10, h:4.5},
+    {art:"casa_gallina", x:100, y:10, h:2.7},
+    {art:"piramide", x:120, y:10, h:6.2}
+  ], movers:[
+    {c:30, r:9, w:2, dx:0, dy:-3, period:140},
+    {c:47, r:8, w:3, dx:6, dy:0, period:420}
+  ]}
 ];
+
+let cur=0, LEVEL, LROWS, LCOLS, LW, SCENERY, MOVERS, FLAG=null;
+/* Which level she is on. A level is open once the one before it is won, and
+   the highest one open is kept in the store. */
+function unlockedLevel(){
+  return Math.min(LEVELS.length-1, Math.max(0, parseInt(store.get("juego-unlocked")||"0",10)));
+}
+function levelBest(n){
+  const own=parseInt(store.get("juego-best-"+n)||"0",10);
+  return n===0 ? Math.max(own, parseInt(store.get("juego-best")||"0",10)) : own;
+}
+function loadLevel(n){
+  cur=n;
+  const L=LEVELS[n];
+  LEVEL=L.rows; LROWS=LEVEL.length; LCOLS=LEVEL[0].length; LW=LCOLS*T;
+  SCENERY=L.scenery;
+  /* the flag rises out of the top of the pirámide: its base starts a little
+     way down inside it and comes up to the apex */
+  const pyr=SCENERY.filter(function(s){ return s.art==="piramide" }).pop();
+  FLAG = pyr ? {x:pyr.x*T, y:pyr.y*T - pyr.h*T + 18} : null;
+  MOVERS=L.movers.map(function(m){
+    return {bx:m.c*T, by:m.r*T, dx:m.dx*T, dy:m.dy*T, w:m.w*T, h:T-8, period:m.period,
+            x:m.c*T, y:m.r*T, ox:m.c*T, oy:m.r*T};
+  });
+}
+loadLevel(0);
+/* The moving platforms slide along their path, one step a frame. */
+function moversStep(){
+  MOVERS.forEach(function(m){
+    m.ox=m.x; m.oy=m.y;
+    const p=(game.t%m.period)/m.period, k=p<.5 ? p*2 : 2-p*2;
+    m.x=Math.round(m.bx+m.dx*k); m.y=Math.round(m.by+m.dy*k);
+  });
+}
+/* Someone standing on a platform goes along with it. */
+function carryHer(){
+  const g=game;
+  MOVERS.forEach(function(m){
+    const dx=m.x-m.ox, dy=m.y-m.oy;
+    if(!dx && !dy) return;
+    if(g.onGround && Math.abs(g.y+PH-m.oy)<=1 && g.x+PW>m.ox+1 && g.x<m.ox+m.w-1){
+      g.x+=dx; g.y+=dy;
+    }
+  });
+}
 
 /* How she moves. Tuned so a normal jump clears three squares and the
    comal sends her seven, and so the three-square holes are comfortably
@@ -1353,13 +1459,21 @@ function tileAt(c,r){
   return LEVEL[r][c];
 }
 function solidAt(c,r){ const t=tileAt(c,r); return t==="#"||t==="="; }
-function hits(x,y,w,h){
+function gridHits(x,y,w,h){
   if(x<0||x+w>LW) return true;                       /* the walls at either end */
   const c0=Math.floor(x/T), c1=Math.floor((x+w-1)/T);
   const r0=Math.floor(y/T), r1=Math.floor((y+h-1)/T);
   for(let r=r0;r<=r1;r++) for(let c=c0;c<=c1;c++) if(solidAt(c,r)) return true;
   return false;
 }
+/* The moving platforms are solid too, but they are not in the picture, so
+   they are checked on their own. */
+function moverHit(x,y,w,h){
+  for(let i=0;i<MOVERS.length;i++){ const m=MOVERS[i];
+    if(x<m.x+m.w && x+w>m.x && y<m.y+m.h && y+h>m.y) return m; }
+  return null;
+}
+function hits(x,y,w,h){ return gridHits(x,y,w,h) || moverHit(x,y,w,h)!==null; }
 
 /* Every drawing is redrawn once into its own little canvas - and once more
    mirrored, for when she walks the other way - then stamped from there. */
@@ -1393,7 +1507,9 @@ function newGame(){
     const t=LEVEL[r][c];
     if(t==="S"){ g.x=c*T+(T-PW)/2; g.y=r*T+T-PH; }
     else if(t==="o") g.pupusas.push({x:c*T+T/2, y:r*T+T/2, got:0, bob:(c*7+r*13)%60});
+    else if(t==="e") g.pupusas.push({x:c*T+T/2, y:r*T+T/2, got:0, bob:(c*7+r*13)%60, kind:"e"});
     else if(t==="d") g.dogs.push({x:c*T+2, y:r*T+T-DH, dir:-1, home:c*T+2});
+    else if(t==="k") g.dogs.push({x:c*T+2, y:r*T+T-DH, dir:-1, home:c*T+2, spd:.42, art:"tortuga", h:20});
     else if(t==="X") g.win={x:c*T+T/2, y:r*T+T/2};
     else if(t==="t") g.bird={x:c*T+T/2, y:r*T+T/2, gone:0, vx:0, vy:0, flap:0};
   }
@@ -1404,6 +1520,9 @@ function newGame(){
 function gameStep(){
   const g=game; g.t++;
   if(g.won){ g.wt++; return }
+
+  /* ---- the moving platforms, and anyone standing on one ---- */
+  moversStep(); carryHer();
 
   /* ---- her ---- */
   const left=keys.left, right=keys.right;
@@ -1444,7 +1563,9 @@ function gameStep(){
      jump timing went with it. */
   g.x+=g.vx;
   if(hits(g.x,g.y,PW,PH)){
-    g.x = g.vx>0 ? Math.floor((g.x+PW)/T)*T-PW : Math.floor(g.x/T)*T+T;
+    const m=moverHit(g.x,g.y,PW,PH);
+    if(m && !gridHits(g.x,g.y,PW,PH)) g.x = g.vx>0 ? m.x-PW : m.x+m.w;
+    else g.x = g.vx>0 ? Math.floor((g.x+PW)/T)*T-PW : Math.floor(g.x/T)*T+T;
     g.vx=0;
   }
   if(g.x<0) g.x=0;
@@ -1455,8 +1576,9 @@ function gameStep(){
      of sight and past the finish. */
   if(g.y<-T){ g.y=-T; g.vy=0 }
   if(hits(g.x,g.y,PW,PH)){
-    if(g.vy>0) g.y=Math.floor((g.y+PH)/T)*T-PH;
-    else g.y=Math.floor(g.y/T)*T+T;
+    const m=moverHit(g.x,g.y,PW,PH), onMover = m && !gridHits(g.x,g.y,PW,PH);
+    if(g.vy>0) g.y = onMover ? m.y-PH : Math.floor((g.y+PH)/T)*T-PH;
+    else g.y = onMover ? m.y+m.h : Math.floor(g.y/T)*T+T;
     g.vy=0;
   }
   /* Whether she is standing on something is a separate question, asked with
@@ -1470,7 +1592,11 @@ function gameStep(){
        there, and although it is never enough to register as a collision it was
        sinking her a fraction of a pixel a frame and snapping her back - a
        twitch about twelve times a second that read as her being jittery. */
-    if(g.vy>0){ g.vy=0; g.y=Math.floor((g.y+PH)/T)*T-PH }
+    if(g.vy>0){
+      const m=moverHit(g.x,g.y+1,PW,PH);
+      g.vy=0;
+      g.y = (m && !gridHits(g.x,g.y+1,PW,PH)) ? m.y-PH : Math.floor((g.y+PH)/T)*T-PH;
+    }
   }
   /* Landing gives both jumps back. Walking off a ledge spends the first one
      once the coyote grace is gone, so stepping into a hole still leaves her
@@ -1505,7 +1631,7 @@ function gameStep(){
       d.x+=d.vx; d.y+=d.vy; d.vy+=.5; d.spin+=.4;
       return;
     }
-    d.x+=d.dir*.85;
+    d.x+=d.dir*(d.spd||.85);
     const ahead=Math.floor((d.x+(d.dir>0?DW+1:-1))/T);
     const foot=Math.floor((d.y+DH+2)/T), body=Math.floor((d.y+DH-6)/T);
     /* It turns at a wall or the edge of its ground, and in any case keeps to
@@ -1552,8 +1678,9 @@ function gameStep(){
   if(g.win && !g.won && atTop){
     g.won=1; g.wt=0; musicStop();
     fanfare(); cannons(); buzz([18,60,18,60,32]);
-    const best=Math.max(g.score, parseInt(store.get("juego-best")||"0",10));
-    store.set("juego-best",String(best));
+    const best=Math.max(g.score, levelBest(cur));
+    store.set("juego-best-"+cur,String(best));
+    store.set("juego-unlocked",String(Math.max(unlockedLevel(), Math.min(cur+1, LEVELS.length-1))));
     gameOverTimer=setTimeout(gameOver,900);
   }
 
@@ -1651,21 +1778,28 @@ function gameDraw(){
   g.pupusas.forEach(function(p){
     if(p.got) return;
     const bob=Math.sin((g.t+p.bob)/11)*3;
-    blit(x,"pupusa", p.x-cam, p.y+8+bob, 16, 0);
+    blit(x,p.kind==="e"?"elote":"pupusa", p.x-cam, p.y+8+bob, p.kind==="e"?18:16, 0);
   });
 
-  /* chuchos, including any tumbling away after a stomp */
+  /* the moving platforms, drawn like the fixed ones */
+  MOVERS.forEach(function(m){
+    const px=m.x-cam;
+    x.fillStyle="#F5B31B"; x.fillRect(px,m.y,m.w,m.h);
+    x.fillStyle="#1A1428"; x.fillRect(px,m.y,m.w,3); x.fillRect(px,m.y+m.h-3,m.w,3);
+  });
+
+  /* chuchos, and the tortugas - including any tumbling away after a stomp */
   g.dogs.forEach(function(d){
     if(d.kicked){
       if(d.y>VH+80) return;
       x.save();
       x.translate(Math.round(d.x+DW/2-cam), Math.round(d.y+DH/2));
       x.rotate(d.spin);
-      blit(x,"chucho", 0, 11, 22, d.vx>0?1:0);
+      blit(x,d.art||"chucho", 0, 11, d.h||22, d.vx>0?1:0);
       x.restore();
       return;
     }
-    blit(x,"chucho", d.x+DW/2-cam, d.y+DH+2, 22, d.dir>0?1:0);
+    blit(x,d.art||"chucho", d.x+DW/2-cam, d.y+DH+2, d.h||22, d.dir>0?1:0);
   });
 
   /* the torogoz, sitting still until she reaches it, then away */
@@ -1678,9 +1812,9 @@ function gameDraw(){
   }
 
   /* the flag at the top, once she gets there */
-  if(g.won && g.win){
+  if(g.won && FLAG){
     const up=Math.min(1,g.wt/16);
-    blit(x,"bandera", g.win.x-cam, g.win.y+6-up*34, 30, 0);
+    blit(x,"bandera", FLAG.x-cam, FLAG.y+6-up*24, 30, 0);
   }
 
   /* her */
@@ -1696,6 +1830,7 @@ function gameDraw(){
   blit(x,"pupusa", 24, 29, 15, 0);
   x.fillStyle="#FFF6E3"; x.font="700 15px Karla, sans-serif"; x.textBaseline="middle";
   x.fillText(g.score+" / "+g.total, 40, 22);
+  x.textAlign="right"; x.fillText((cur+1)+" / "+LEVELS.length, VW-10, 22); x.textAlign="left";
 }
 
 /* ---------- a little cumbia, made of square waves ----------
@@ -1789,15 +1924,14 @@ function gameOver(){ gameOverTimer=null; if(!game) return; juego(game.won?"won":
 
 /* Game copy is English first, then Spanish, the same as the tabs. */
 function bi(en,es){return '<span class="bi"><span class="en">'+en+'</span><span class="es">'+es+'</span></span>'}
-function juego(screen){
-  const best=parseInt(store.get("juego-best")||"0",10);
-
+function juego(screen, lvl){
   if(screen==="play"){
     gameStop();
+    loadLevel(lvl===undefined ? cur : lvl);
     view.innerHTML=
       '<div class="gamewrap">'+
         '<canvas id="gamecv" width="'+VW+'" height="'+VH+'" '+
-          'aria-label="El Camino — a platform game"></canvas></div>'+
+          'aria-label="Pupusa game — a platform game"></canvas></div>'+
       '<div class="pad">'+
         '<button class="padbtn" id="padl" aria-label="Left">◀</button>'+
         '<button class="padbtn" id="padr" aria-label="Right">▶</button>'+
@@ -1820,16 +1954,16 @@ function juego(screen){
   }
 
   if(screen){
-    const g=game, won=screen==="won";
+    const g=game, won=screen==="won", best=levelBest(cur), more=cur<LEVELS.length-1;
     gameStop();
     view.innerHTML=
       '<div class="card rise" style="background:'+(won?"var(--verde)":"var(--paper-2)")+';'+
         (won?"color:#fff":"")+'">'+
         '<div class="prompt" style="'+(won?"color:rgba(255,255,255,.75)":"")+'">'+
-          (won?bi("You made it!","¡Llegaste!"):bi("Oops!","¡Puchica!"))+'</div>'+
+          (won?bi(more?"You made it!":"You finished every level!",more?"¡Llegaste!":"¡Terminaste todos los niveles!"):bi("Oops!","¡Puchica!"))+'</div>'+
         '<div class="bignum">'+g.score+'</div>'+
         '<div class="prompt" style="margin:8px 0 0;'+(won?"color:rgba(255,255,255,.75)":"")+'">'+
-          (won?"of "+g.total+" pupusas/pupusas de "+g.total:"pupusas — start over/empezá otra vez")+
+          (won?"of "+g.total+" collected/recogidas":"collected — start over/recogidas — empezá otra vez")+
           (best?' &nbsp;·&nbsp; Best/Mejor '+best:'')+'</div>'+
         '<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">'+
           (won?icon("bandera",26)+icon("pupusa",26)+icon("estrella",26):icon("chucho",26))+'</div>'+
@@ -1837,36 +1971,52 @@ function juego(screen){
       '<p class="note" style="text-align:center;padding:0 6px 16px;font-size:14.5px">'+
         (won?bi("You made it to the top of the pirámide.","Subiste hasta la punta de la pirámide."):
              bi("A hole or a chucho and the level starts over.","Un hoyo o un chucho y el nivel vuelve a empezar."))+'</p>'+
+      (won&&more?'<button class="btn go wide" id="jnext">'+icon("pupusa",20)+'Next level/Siguiente nivel</button>':'')+
       '<button class="btn go wide" id="jagain">Again/Otra vez</button>';
     if(won) cannons();
-    document.getElementById("jagain").onclick=function(){tone(659,.12,"square",.08);buzz(12);juego("play")};
+    if(won&&more) document.getElementById("jnext").onclick=function(){tone(659,.12,"square",.08);buzz(12);juego("play",cur+1)};
+    document.getElementById("jagain").onclick=function(){tone(659,.12,"square",.08);buzz(12);juego("play",cur)};
     return;
   }
 
+  /* the start screen: Start plays the newest level that is open, and the
+     row of levels lets her go back to any she has already opened */
+  const top=unlockedLevel();
   view.innerHTML=
     '<div class="card rise" style="background:var(--blue);color:var(--paper)">'+
       '<div class="prompt" style="color:rgba(255,255,255,.7)">'+bi("Run, jump, collect pupusas","Corré, saltá, juntá pupusas")+'</div>'+
       '<div class="hero" style="color:var(--marigold)">'+icon("canasta",40,"bob")+
         '<span>El Camino</span></div></div>'+
     '<button class="btn go wide" id="jstart">'+icon("pupusa",20)+'Start/Empezar</button>'+
+    '<div class="chips" style="margin:0 0 14px">'+LEVELS.map(function(L,i){
+      const lock=i>top, b=levelBest(i);
+      return '<button class="chip" data-lv="'+i+'" aria-pressed="'+(i===top)+'"'+(lock?' disabled':'')+'>'+
+        (i+1)+' · '+(lock?'Locked/Bloqueado':esc(L.en)+'/'+esc(L.es))+(b?' · '+b:'')+'</button>';
+    }).join("")+'</div>'+
     '<div class="panel rise" style="padding:12px 14px">'+
       '<p style="margin:0 0 8px;font-size:14.5px"><b>Arrow keys</b> ← → to walk, '+
       '<b>space bar</b> to jump. Tap it <b>twice</b> for a second jump in the air. On a phone, use the buttons.</p>'+
       '<p style="margin:0 0 8px;font-size:14.5px">Land <b>on top of</b> a chucho and it flies off. '+
       'Touch it any other way and the run is over.</p>'+
-      '<p style="margin:0 0 12px;font-size:14.5px">Jump the houses, climb the volcán, bounce off the comal. '+
+      '<p style="margin:0 0 8px;font-size:14.5px">Jump the houses, climb the volcán, bounce off the comal. '+
       'A hole and you start again at the beginning.</p>'+
+      '<p style="margin:0 0 12px;font-size:14.5px">Ride the <b>orange platforms</b> that move across the gaps. '+
+      'Finish a level to open the next one.</p>'+
       '<div style="border-top:0.5px solid rgba(0,0,0,.15);padding-top:10px">'+
       '<p style="margin:0 0 8px;font-size:13px;opacity:.78"><b>Las flechas</b> ← → para caminar, '+
       '<b>la barra espaciadora</b> para saltar. Tocala <b>dos veces</b> y da un '+
       'segundo salto en el aire. En el teléfono, usá los botones.</p>'+
       '<p style="margin:0 0 8px;font-size:13px;opacity:.78">Caéle <b>encima</b> a un chucho y '+
       'sale volando. Tocalo de cualquier otra manera y se acabó.</p>'+
-      '<p style="margin:0;font-size:13px;opacity:.78">Saltá sobre las casas, subí el volcán, rebotá en el comal. '+
-      'Un hoyo y volvés al principio.</p></div></div>'+
-    (best?'<p class="note" style="text-align:center;padding:12px 2px">Best/Mejor: '+best+' pupusas</p>':'');
+      '<p style="margin:0 0 8px;font-size:13px;opacity:.78">Saltá sobre las casas, subí el volcán, rebotá en el comal. '+
+      'Un hoyo y volvés al principio.</p>'+
+      '<p style="margin:0;font-size:13px;opacity:.78">Subite a las <b>plataformas naranjas</b> que se mueven para cruzar '+
+      'los huecos. Terminá un nivel para abrir el siguiente.</p></div></div>';
   document.getElementById("jstart").onclick=function(){
-    tone(659,.12,"square",.08); buzz(12); juego("play")};
+    tone(659,.12,"square",.08); buzz(12); juego("play",top)};
+  view.querySelectorAll("[data-lv]").forEach(function(b){
+    b.onclick=function(){ tone(523,.08,"square",.06); juego("play",parseInt(b.dataset.lv,10)) };
+  });
 }
 
 /* ============ SHELL ============ */
@@ -1898,8 +2048,14 @@ function render(){
 /* Same again if the phone is locked or the app is put in the background. */
 addEventListener("visibilitychange",function(){ if(document.hidden) musicStop() });
 document.getElementById("mastflag").innerHTML=icon("flag",30);
+/* The button names what it will DO: while the sound is on it offers to turn
+   it off, and the other way round. */
+function muteLabel(){
+  return soundOn ? bi("Turn Sound Off","Apagar sonido") : bi("Turn Sound On","Encender sonido");
+}
+document.getElementById("mute").innerHTML=muteLabel();
 document.getElementById("mute").onclick=function(e){
-  soundOn=!soundOn; e.target.textContent=soundOn?"Sound on":"Sound off";
+  soundOn=!soundOn; e.currentTarget.innerHTML=muteLabel();
   if(soundOn) tone(784,.1,"square",.08);
 };
 loadSaved();
